@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+for name in $@; do
+    tempfile='mktemp'
+    sort -u $name > "$tempfile"
+    mv $tempfile -T $name
+done

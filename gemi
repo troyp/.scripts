@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+gem install "$1" && echo "$1" >> $HOME/.gem_installs

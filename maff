@@ -1,0 +1,49 @@
+function printhelp () {
+    printf -- "Usage: maff [OPTION]... [DIRECTORY]\n"
+    printf -- "Convert an HTML directory containing an index.html file into a .maff file.\n"
+    printf -- "\n"
+    printf -- "-h -? \t display this help and exit\n"
+    printf -- "-o   \t specify output filename\n"
+    printf -- "-q   \t suppress output\n"
+    printf -- "-u   \t convert spaces in directory name to underscores\n"
+}
+
+NAMEOPT='d'
+QUIET=''
+while getopts :h?o:uq opt; do
+    case "$opt" in
+      h|\?)
+	printhelp
+	exit
+    	;;
+      o)
+    	NAMEOPT='c'
+    	archive_name="$OPTARG"
+    	;;
+      u)
+    	NAMEOPT='u'
+    	;;
+      q)
+    	QUIET='t'
+    	;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+case $NAMEOPT in
+  c)
+    ;;
+  d)
+    archive_name="${1%/}.maff"
+    ;;
+  u)
+    archive_name=`echo "${1%/}" | sed -e 's/ /_/g'`.maff
+    ;;
+esac
+
+if [[ $QUIET ]]; then
+    7z a -tzip "$archive_name" "$1" >> /dev/null
+else
+    7z a -tzip "$archive_name" "$1" 
+fi

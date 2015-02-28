@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+args=${@:-'-mkpE -np -c'}
+default_addr="$(xsel -ob)"
+read -p "address (default: $default_addr): " addr
+printf "wget -c %s %s\n" "$args" ${addr:-"$default_addr"} > update
+chmod a+x update
+./update
+

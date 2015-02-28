@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+sudo pip install "$1" && echo "$1" >> $HOME/.pip_installs

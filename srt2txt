@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# gem install srt
+require 'srt'
+
+file = SRT::File.parse(File.new(ARGV[0]))
+file.lines.each do |line|
+    puts line.text.join(" ")
+end

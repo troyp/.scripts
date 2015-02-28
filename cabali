@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+cabal update || exit 1
+for name in $@;
+  do cabal install "$name" && echo "$name" >> $HOME/.cabal_installs;
+done

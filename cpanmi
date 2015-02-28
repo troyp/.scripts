@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+for name in $@;
+  do sudo cpanm "$name" && echo "$name" >> $HOME/.cpan_installs;
+done

@@ -1,0 +1,4 @@
+#!/bin/sh
+# gem install srt
+
+srt2txt "$1" > "${1%.srt}.txt"

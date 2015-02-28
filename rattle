@@ -1,0 +1,6 @@
+#! /usr/bin/Rscript
+
+library('rattle')
+rattle()
+while (TRUE) { Sys.sleep(100) }
+

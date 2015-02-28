@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+sudo gem install "$1" && echo "$1" >> $HOME/.gem_installs
