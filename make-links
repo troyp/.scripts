@@ -5,8 +5,8 @@
 
 dirlinks=$(mktemp)
 filelinks=$(mktemp)
-find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=%p>%f/</a><br>\n" >> $dirlinks
-find . -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=%p>%f</a><br>\n" >> $filelinks
+find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f/</a><br>\n" >> $dirlinks
+find . -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=\"%p\">%f</a><br>\n" >> $filelinks
 
 # Create index.html file
 
