@@ -1,0 +1,17 @@
+#! /bin/bash
+# Troy S Pracy 2014. MIT licensed.
+
+# Create HTML index file redirecting to another file
+
+if [ -e index.html ]
+then
+    >&2 echo "The file 'index.html' already exists. Exiting."
+    exit
+fi
+
+> index.html echo '<html>'
+>>index.html echo '  <head>'
+>>index.html echo "    <meta http-equiv=\"refresh\" content=\"0; url=$1\" />"
+>>index.html echo '  </head>'
+>>index.html echo '</html>'
+

@@ -1,0 +1,6 @@
+#! /bin/bash
+
+temp=$(mktemp);
+sort -u "$1" > $temp;
+# TODO: is there a way to just `mv temp "$1` while keeping metadata/permissions?
+cat $temp > "$1";

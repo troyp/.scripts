@@ -1,2 +1,4 @@
 #!/usr/bin/env sh
-gem install "$1" && echo "$1" >> $HOME/.gem_installs
+for x in "$@"; do
+    gem install "$x" && echo "$x" >> $HOME/.gem_installs
+done

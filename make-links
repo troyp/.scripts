@@ -3,6 +3,12 @@
 
 # Create HTML links to directories and files
 
+if [ -e index.html ]
+then
+    >&2 echo "The file 'index.html' already exists. Exiting."
+    exit
+fi
+
 dirlinks=$(mktemp)
 filelinks=$(mktemp)
 find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f/</a><br>\n" >> $dirlinks
@@ -10,26 +16,102 @@ find . -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=\"%p\
 
 # Create index.html file
 
-printf '<html>\n' > index.html
+cat << EOF > index.html
+<html>
+  <meta charset="UTF-8">
 
-printf '  <style media="screen" type="text/css">\n' >> index.html
-printf '    .directory { font-weight: bold; color: red; }\n' >> index.html
-printf '  </style>\n' >> index.html
-printf '  <style media="screen" type="text/css">\n' >> index.html
-printf '    .file { fontweight: normal; color: blue; }\n' >> index.html
-printf '  </style>\n' >> index.html
+  <style media="screen" type="text/css">
+    .directory {
+      text-align: center;
+    }
+    .directory a {
+      font-weight: bold;
+    }
+    .directory a:link {
+      color: #FF0000; <!-- red -->
+    }
+    .directory :link:hover {
+      color: #FF88FF;
+    }
+    .directory a:visited {
+      color: #FF8888; <!-- light red -->
+    } 
+    .directory :visited:hover {
+      color: #FF88FF;
+    } </style>
+  <style media="screen" type="text/css">
+    .file {
+      text-align: center;
+    }
+    .file a {
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .file a:link {
+      color: #000000; <!-- black -->
+    }
+    .file :link:hover {
+      color: #4285F4; <!-- light blue -->
+    }
+    .file a:visited {
+      color: #888888; <!-- grey -->
+    }
+    .file :visited:hover {
+      color: #4285F4; <!-- light blue -->
+    } </style>
+  <style media="screen" type="text/css">
+    .heading {
+      text-align: center;
+    } </style>
+  <style media="screen" type="text/css">
+    .boxed { 
+      margin: auto;
+      padding: 20px; 
+      width: auto; 
+      display: inline-block;
+      text-align: left;
+    } </style>
+  <style media="screen" type="text/css">
+    .withborder {
+      border: solid;
+    } </style>
 
-printf '  <body>\n' >> index.html
+  <body>
+EOF
+
+# printf '<html>\n' > index.html
+# printf '  <meta charset="UTF-8">\n' > index.html
+
+# printf '  <style media="screen" type="text/css">\n' >> index.html
+# printf '    .directory { font-weight: bold; color: red; }\n' >> index.html
+# printf '  </style>\n' >> index.html
+# printf '  <style media="screen" type="text/css">\n' >> index.html
+# printf '    .file { font-weight: normal; color: black; text-decoration: none; }\n' >> index.html
+# printf '  </style>\n' >> index.html
+
+# printf '  <body>\n' >> index.html
 printf '    <p>\n' >> index.html
-printf '      <h1>'  >> index.html
+printf '      <h1 class="heading">'  >> index.html
 printf "${PWD##*/}" >> index.html
 printf '</h1>\n' >> index.html
 printf '    </p>\n' >> index.html
 printf '    <p>\n' >> index.html
-printf '      <h2>contents</h2><br>\n' >> index.html
-printf "      <a class='directory' href=.>./</a><br>\n" >> index.html
+printf '      <h2 class="heading">contents</h2><br>\n' >> index.html
+printf '      <div class="directory">\n' >> index.html
+printf '        <div class="boxed">\n' >> index.html
+printf "          <a href=.>DIRECTORY</a>\n" >> index.html
+printf '        </div>\n' >> index.html
+printf '      </div><br>\n' >> index.html
+printf '      <div class="directory">\n' >> index.html
+printf '        <div class="boxed">\n' >> index.html
 sort -fV $dirlinks >> index.html
+printf '        </div>\n' >> index.html
+printf '      </div><br>\n' >> index.html
+printf '      <div class="file">\n' >> index.html
+printf '        <div class="boxed withborder">\n' >> index.html
 sort -fV $filelinks >> index.html
+printf '        </div>\n' >> index.html
+printf '      </div><br>\n' >> index.html
 printf '    </p>\n' >> index.html
 
 printf '  </body>\n' >> index.html

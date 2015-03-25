@@ -1,0 +1,6 @@
+#! /bin/sh
+# Troy S Pracy 2014. MIT licensed.
+
+start=`jday $1 1 1 0 0 0`
+end=`jday $2 12 31 23 59 59`
+echo $start $end
