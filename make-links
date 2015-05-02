@@ -11,7 +11,7 @@ fi
 
 dirlinks=$(mktemp)
 filelinks=$(mktemp)
-find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f/</a><br>\n" >> $dirlinks
+find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f</a><br>\n" >> $dirlinks
 find . -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=\"%p\">%f</a><br>\n" >> $filelinks
 
 # Create index.html file
@@ -26,18 +26,19 @@ cat << EOF > index.html
     }
     .directory a {
       font-weight: bold;
+      text-decoration: none;
     }
     .directory a:link {
-      color: #FF0000; <!-- red -->
+      color: #2030B0; <!-- blue -->
     }
     .directory :link:hover {
-      color: #FF88FF;
+      color: #FF77DF; <!-- pink -->
     }
     .directory a:visited {
-      color: #FF8888; <!-- light red -->
+      color: #7070DC; <!-- light moody blue -->
     } 
     .directory :visited:hover {
-      color: #FF88FF;
+      color: #FF77DF; <!-- pink -->
     } </style>
   <style media="screen" type="text/css">
     .file {
@@ -54,7 +55,7 @@ cat << EOF > index.html
       color: #4285F4; <!-- light blue -->
     }
     .file a:visited {
-      color: #888888; <!-- grey -->
+      color: #777777; <!-- grey -->
     }
     .file :visited:hover {
       color: #4285F4; <!-- light blue -->
@@ -79,17 +80,6 @@ cat << EOF > index.html
   <body>
 EOF
 
-# printf '<html>\n' > index.html
-# printf '  <meta charset="UTF-8">\n' > index.html
-
-# printf '  <style media="screen" type="text/css">\n' >> index.html
-# printf '    .directory { font-weight: bold; color: red; }\n' >> index.html
-# printf '  </style>\n' >> index.html
-# printf '  <style media="screen" type="text/css">\n' >> index.html
-# printf '    .file { font-weight: normal; color: black; text-decoration: none; }\n' >> index.html
-# printf '  </style>\n' >> index.html
-
-# printf '  <body>\n' >> index.html
 printf '    <p>\n' >> index.html
 printf '      <h1 class="heading">'  >> index.html
 printf "${PWD##*/}" >> index.html
@@ -110,10 +100,12 @@ printf '      </div><br>\n' >> index.html
 printf '      <div class="file">\n' >> index.html
 printf '        <div class="boxed withborder">\n' >> index.html
 sort -fV $filelinks >> index.html
-printf '        </div>\n' >> index.html
-printf '      </div><br>\n' >> index.html
-printf '    </p>\n' >> index.html
 
-printf '  </body>\n' >> index.html
+cat << EOF >> index.html
+        </div>
+      </div><br>
+    </p>
+  </body>
+</html>
+EOF
 
-printf '</html>\n' >> index.html

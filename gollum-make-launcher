@@ -1,0 +1,28 @@
+#! /bin/sh
+# gollum-make-launcher [NAME]
+# Execute in a Gollum wiki directory to create an executable called 
+# NAME (default: serve) which serves the wiki on port 4567 (or the 
+# lowest subsequent port which is available).
+
+name="${1:-serve}"
+
+if [ -f "$name" ]; then
+    echo "Error: cannot create \"$name\"; file already exists"
+    exit
+fi
+
+# BROWSER=`sensible-browser`
+BROWSER=${BROWSER:-firefox}
+touch "$name"
+chmod a+x "$name"
+cat << EOF > "$name"
+#! /bin/sh
+port=4567
+while netstat -antp 2>/dev/null | grep ":\$port" >/dev/null; do
+    port=\$((\$port + 1))
+done
+gollum --port \$port . &
+sleep 2
+$BROWSER http://localhost:\$port &
+EOF
+exit

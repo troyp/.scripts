@@ -1,0 +1,17 @@
+#!/bin/sh
+":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+;; crude script to break up a single-line css file
+;; non-idempotent
+;; doesn't handle nested braces
+;; extremely crude - shebang emacs scripts are tricky to get working; use another language?
+
+(progn
+  (pop argv)
+  (let* ((fname (pop argv))
+	 (absfname (expand-file-name fname)))
+    (find-file fname)
+    (while (search-forward "}" nil t)
+      (replace-match "}\n"))
+    (write-region (point-min) (point-max) absfname)
+    (kill-emacs)))
