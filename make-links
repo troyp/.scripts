@@ -1,22 +1,25 @@
 #! /bin/sh
-# Troy S Pracy 2014. MIT licensed.
+# Troy S Pracy 2014-2015. MIT licensed.
 
 # Create HTML links to directories and files
 
-if [ -e index.html ]
+if [ -e "$outfile" ]
 then
-    >&2 echo "The file 'index.html' already exists. Exiting."
+    >&2 echo "The file '"$outfile"' already exists. Exiting."
     exit
 fi
 
+outfile="${2:-index.html}"
+dir="${1:-.}"
+
 dirlinks=$(mktemp)
 filelinks=$(mktemp)
-find . -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f</a><br>\n" >> $dirlinks
-find . -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=\"%p\">%f</a><br>\n" >> $filelinks
+find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "      <a class='directory' href=\"%p\">%f</a><br>\n" >> $dirlinks
+find "$dir" -mindepth 1 -maxdepth 1 -type f -printf "      <a class='file' href=\"%p\">%f</a><br>\n" >> $filelinks
 
 # Create index.html file
 
-cat << EOF > index.html
+cat << EOF > "$outfile"
 <html>
   <meta charset="UTF-8">
 
@@ -80,28 +83,28 @@ cat << EOF > index.html
   <body>
 EOF
 
-printf '    <p>\n' >> index.html
-printf '      <h1 class="heading">'  >> index.html
-printf "${PWD##*/}" >> index.html
-printf '</h1>\n' >> index.html
-printf '    </p>\n' >> index.html
-printf '    <p>\n' >> index.html
-printf '      <h2 class="heading">contents</h2><br>\n' >> index.html
-printf '      <div class="directory">\n' >> index.html
-printf '        <div class="boxed">\n' >> index.html
-printf "          <a href=.>DIRECTORY</a>\n" >> index.html
-printf '        </div>\n' >> index.html
-printf '      </div><br>\n' >> index.html
-printf '      <div class="directory">\n' >> index.html
-printf '        <div class="boxed">\n' >> index.html
-sort -fV $dirlinks >> index.html
-printf '        </div>\n' >> index.html
-printf '      </div><br>\n' >> index.html
-printf '      <div class="file">\n' >> index.html
-printf '        <div class="boxed withborder">\n' >> index.html
-sort -fV $filelinks >> index.html
+printf '    <p>\n' >> "$outfile"
+printf '      <h1 class="heading">'  >> "$outfile"
+printf "${PWD##*/}" >> "$outfile"
+printf '</h1>\n' >> "$outfile"
+printf '    </p>\n' >> "$outfile"
+printf '    <p>\n' >> "$outfile"
+printf '      <h2 class="heading">contents</h2><br>\n' >> "$outfile"
+printf '      <div class="directory">\n' >> "$outfile"
+printf '        <div class="boxed">\n' >> "$outfile"
+printf "          <a href=.>DIRECTORY</a>\n" >> "$outfile"
+printf '        </div>\n' >> "$outfile"
+printf '      </div><br>\n' >> "$outfile"
+printf '      <div class="directory">\n' >> "$outfile"
+printf '        <div class="boxed">\n' >> "$outfile"
+sort -fV $dirlinks >> "$outfile"
+printf '        </div>\n' >> "$outfile"
+printf '      </div><br>\n' >> "$outfile"
+printf '      <div class="file">\n' >> "$outfile"
+printf '        <div class="boxed withborder">\n' >> "$outfile"
+sort -fV $filelinks >> "$outfile"
 
-cat << EOF >> index.html
+cat << EOF >> "$outfile"
         </div>
       </div><br>
     </p>

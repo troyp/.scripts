@@ -1,0 +1,21 @@
+#! /usr/bin/env python
+
+from __future__ import print_function
+import sys
+
+s = ''.join(sys.argv[1:])
+
+def expand_range(a, b=None):
+    "expand inclusive range a...b, return an iterable of integers"
+    if b is None:
+        b = a
+    return range(a, b+1)
+
+def expand_ranges_string(s):
+    rgs = s.split(',')
+    for rg in rgs:
+        args = (int(x) for x in rg.split('-'))
+        for i in expand_range(*args):
+            print(i)
+
+expand_ranges_string(s)

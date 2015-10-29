@@ -4,8 +4,4 @@
 # prevents terminal display from being garbled and having to be `reset`
 # eg. locate .foorc | xargs vipipe
 
-tty=$(tty)
-out=$(mktemp)
-cat > $out
-vim </dev/tty $out;
-cat $out
+exec vim </dev/tty "$@"
