@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+file="$1"
+startroman="${2:-1}"
+startarabic="${3:-1}"
+endbigroman=$(( $startroman - 1 ))
+endroman=$(( $startarabic - 1 ))
+
+
+
+echo "\\documentclass[a4paper]{article}"
+echo "\\usepackage{pdfpages}"
+echo "\\usepackage[pdfpagelabels]{hyperref}"
+echo
+echo "\\begin{document}"
+echo
+if (( $startroman > 1 )); then 
+	echo "\\renewcommand{\\thepage}{\\Roman{page}}"
+	echo "\\setcounter{page}{1}"
+	echo "\\includepdf[pages=1-$endbigroman]{$file}"
+	echo
+fi
+if (( $startarabic > $startroman )); then
+	echo "\\renewcommand{\\thepage}{\\roman{page}}"
+	echo "\\setcounter{page}{1}"
+	echo "\\includepdf[pages=$startroman-$endroman]{$file}"
+	echo
+fi
+echo "\\renewcommand{\\thepage}{\\arabic{page}}"
+echo "\\setcounter{page}{1}"
+echo "\\includepdf[pages=$startarabic-]{$file}"
+echo
+echo "\\end{document}"

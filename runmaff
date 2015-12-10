@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+filepath=`realpath "$1"`
+filename="${filepath##*/}"
+basename="${filename%.*}"
+safename=`echo "$basename" | tr " \t" "__"`
+if [ ! -d /tmp/runmaff/ ]; then
+	mkdir /tmp/runmaff/
+fi
+dir=`mktemp -d "/tmp/runmaff/$safename.XXXX"`
+echo "temp dir: $dir"
+{
+	cd "$dir"
+	unzip "$filepath"
+	# xdg-open ./"$basename"/index.html
+	xdg-open ./*/index.html
+}

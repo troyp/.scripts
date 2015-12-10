@@ -1,0 +1,27 @@
+#! /bin/sh
+
+file="$1"
+startroman="${2:-1}"
+startarabic="${3:-1}"
+
+
+
+echo '\\documentclass[a4paper]{article}'
+echo "\\usepackage{pdfpages}"
+echo "\\usepackage[pdfpagelabels]{hyperref}"
+echo
+echo '\\begin{document}'
+echo
+echo '\\renewcommand{\\thepage}{\\Roman{page}}'
+echo "\\setcounter{page}{1}"
+echo "\\includepdf[pages=1-$startroman]{$file}"
+echo
+echo '\\renewcommand{\\thepage}{\\roman{page}}'
+echo "\\setcounter{page}{1}"
+echo "\\includepdf[pages=$startroman-$startarabic]{$file}"
+echo
+echo '\\renewcommand{\\thepage}{\\arabic{page}}'
+echo "\\setcounter{page}{1}"
+echo "\\includepdf[pages=$startarabic-]{$file}"
+echo
+echo '\\end{document}'

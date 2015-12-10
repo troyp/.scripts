@@ -95,19 +95,27 @@ printf '        <div class="boxed">\n' >> "$outfile"
 printf "          <a href=.>DIRECTORY</a>\n" >> "$outfile"
 printf '        </div>\n' >> "$outfile"
 printf '      </div><br>\n' >> "$outfile"
+
+if [ -s $dirlinks ]; then
 printf '      <div class="directory">\n' >> "$outfile"
 printf '        <div class="boxed">\n' >> "$outfile"
 sort -fV $dirlinks >> "$outfile"
 printf '        </div>\n' >> "$outfile"
 printf '      </div><br>\n' >> "$outfile"
+fi
+
+if [ -s $filelinks ]; then
 printf '      <div class="file">\n' >> "$outfile"
 printf '        <div class="boxed withborder">\n' >> "$outfile"
 sort -fV $filelinks >> "$outfile"
+printf '        </div>' >> "$outfile"
+printf '      </div><br>' >> "$outfile"
+fi
+
+printf '    </p>' >> "$outfile"
 
 cat << EOF >> "$outfile"
-        </div>
-      </div><br>
-    </p>
+
   </body>
 </html>
 EOF

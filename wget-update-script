@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# note: if options requiring quotes are passed, eg. --accept-regex, an extra
+# level of quotes are required to preserve the original quotes in the argument.
 args=${@:-'-mkpE -np -nH'}
 default_addr="$(xsel -ob)"
 read -p "address (default: $default_addr): " addr
