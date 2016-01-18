@@ -1,4 +1,12 @@
-#!/usr/bin/env sh
-for name in $@;
-  do sudo cpanm "$name" && echo "$name" >> $HOME/.cpan_installs;
+#!/usr/bin/env bash
+options="";
+while [[ $1 =~ ^- ]]; do
+    case "$1" in
+      *) options+=" $1"
+         ;;
+    esac
+    shift
+done
+for name in $@; do
+    cpanm "$name" && echo "$name" >> $HOME/.cpan_installs;
 done
