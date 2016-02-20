@@ -1,2 +1,0 @@
-#!/usr/bin/env sh
-raco pkg install "$1" && echo "$1" >> $HOME/.raco_installs

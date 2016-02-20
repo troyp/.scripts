@@ -1,2 +1,0 @@
-#!/usr/bin/env sh
-sudo -H pip3 install "$1" && echo "$1" >> $HOME/.pip3_installs
