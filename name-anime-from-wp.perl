@@ -11,11 +11,11 @@ my $usage = "Usage: name-anime-from-wp [OPTION...] [FILE]
 my $odd_only = 0;
 
 while ( $ARGV[0] =~ "^-" ) {
-    if ( "$ARGV[0]" eq "-h" ) {
+    if ( "$ARGV[0]" =~ /^--?h(elp)?$/ ) {
         print "$usage";
         exit;
     }
-    if ( "$ARGV[0]" eq "-d" ) {
+    if ( "$ARGV[0]" =~ /^--?(d|remove-descriptions)$/ ) {
         $odd_only = 1;
         shift;
     }
@@ -33,4 +33,5 @@ while ( defined ($_=<IN>) ) {
         print;
     }
 }
+
 close IN or die "$0: close $f failed, code $!\n";
