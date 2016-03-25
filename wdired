@@ -1,0 +1,3 @@
+#! /bin/bash
+
+emacsclient -e "(progn (dired \"$1\") (wdired-change-to-wdired-mode))"
