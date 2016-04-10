@@ -1,0 +1,33 @@
+#! /usr/bin/python
+#                                                           -*- python -*-
+
+import argparse
+
+def fromgauge(n):
+    diameter = 0.127 * 92**((36.-n)/39)    # mm
+    return diameter
+
+def thickgauge(m):
+    diameter = fromgauge(1-m)
+    return diameter
+
+def process_arg(gauge):
+    if gauge[0] == "0":
+        if gauge[1] == "/":
+            m = int(gauge[2:])
+            return thickgauge(m)
+        elif gauge[1] == "0":
+            if gauge != "0" * len(gauge):
+                raise ValueError("gauge starting with 0 should be in the form 0...0 or 0/m")
+            else:
+                return thickgauge(len(gauge))
+    else:
+        return fromgauge(int(gauge))
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='gauge')
+    parser.add_argument('gauge', type=str, help='wire gauge')
+    parser.add_argument('rest', type=str, nargs='*')
+    args = parser.parse_args()
+    gauge = args.gauge.strip()    # check if necessary
+    print process_arg(gauge)
