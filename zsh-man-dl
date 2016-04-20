@@ -1,0 +1,12 @@
+#! /usr/bin/env zsh
+
+output_dir="${1:-/opt/man/man1/}";
+url="${2:-$zsh_URL}";
+
+wget --quiet --output-document=- $url |
+    sudo tar xvz \
+         --directory "$output_dir" \
+         --wildcards "zsh[-0-9]*/Doc/*[.]1" \
+         --strip-components=2 \
+    && sudo chown root:root "$output_dir"/zsh*.1 \
+    && sudo chmod 644 "$output_dir"/zsh*.1;
