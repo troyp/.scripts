@@ -1,0 +1,16 @@
+#! /usr/bin/env sh
+
+author="$1";
+repo="$2";
+output_dir="${3:-/opt/docs}";
+tempdir=`mktemp -d`;
+
+cd $tempdir;
+url="https://github.com/$author/$repo.git";
+git clone "$url";
+cd "$repo";
+
+for f in *README*; do
+    echo "copying $f to $output_dir"/"$repo-$f"
+    mv "$f" "$output_dir"/"$repo-$f"
+done;
