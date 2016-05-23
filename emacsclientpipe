@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# vipipe: call vim with piped filename(s) (allows other arguments too).
+# prevents terminal display from being garbled and having to be `reset`
+# eg. locate .foorc | xargs vipipe
+
+tty=$(tty)
+out=$(mktemp)
+cat > $out
+emacsclient </dev/tty $out;
+cat $out
