@@ -1,17 +1,36 @@
 #!/usr/bin/env bash
 
+if [[ "$1" =~ ^--?h(elp)?$ ]]; then
+    cat <<EOF
+runmaff [-h] [-q] file [program]
+    Run a MAFF file using default or chosen program for HTML files.
+
+    Extracts the MAFF file into a temp directory and calls PROGRAM, if
+    specified, or otherwise the program called by xdg-open.
+
+    Options:
+      -h --help    display this help
+      -q --quiet   do not print messages
+EOF
+    exit;
+fi;
+if [[ "$1" =~ ^--?q(uiet)?$ ]]; then exec 3>/dev/null; shift; else exec 3>&1; fi;
+
 filepath=`realpath "$1"`
 filename="${filepath##*/}"
 basename="${filename%.*}"
 safename=`echo "$basename" | tr " \t" "__"`
+
+program="${2:-xdg-open}"
+
 if [ ! -d /tmp/runmaff/ ]; then
 	mkdir /tmp/runmaff/
 fi
 dir=`mktemp -d "/tmp/runmaff/$safename.XXXX"`
-echo "temp dir: $dir"
+echo "temp dir: $dir" >&3
 {
 	cd "$dir"
-	unzip "$filepath"
+	unzip "$filepath" >&3
 	# xdg-open ./"$basename"/index.html
-	xdg-open ./*/index.html
+	"$program" ./*/index.html >&3
 }
