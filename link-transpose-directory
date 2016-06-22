@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+PARSED=$(getopt -n "$0" -o hkpq: --long "help,keep-original,parents,quiet"  -- "$@")
+if [ $? -ne 0 ]; then echo "getopt error"; exit 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "$1" in
+        -h|--help)
+            cat <<EOF
+link-transpose-directory [-h] [-q] dest topic source
+Moves the source/topic directory to dest/topic/source directory, replacing
+the original directory with symlink source/topic -> dest/topic/source.
+With -k (--keep-original) option, instead places a symlink in dest/topic
+linking dest/topic/source -> source/topic.
+
+Options:
+-h --help           display this help
+-k --keep-original  keep original directory and create symlink in dest
+[not impl] -p --parents        create parent directories as needed
+-q --quiet          quiet-mode
+EOF
+            shift;
+            ;;
+        -k|--keep-original)
+            keep="-k "
+            shift;
+            ;;
+        -p|--parents)
+            parents="-p "
+            shift;
+            ;;
+        -q|--quiet)
+            quiet="true"
+            shift;
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+dest="$1"
+topic="$2"
+source="$3"
+
+if [[ -z $quiet ]]; then
+    echo "dest=$dest"
+    echo "topic=$topic"
+    echo "source=$source"
+fi
+
+if [[ -d "$source/$topic" ]]; then
+    if [[ -n $keep ]]; then
+        # symlink dest/topic/source -> source/topic
+        [[ -z $quiet ]] && echo "ln -s -T \"$source/$topic\" \"$dest/$topic/$source\""
+        ln -s -T "$source/$topic" "$dest/$topic/$source"
+    else
+        # mv source/topic -> dest/topic/source
+        [[ -z $quiet ]] && echo "mv -i \"$source/$topic\" \"$dest/$topic/$source\""
+        mv -i "$source/$topic" "$dest/$topic/$source"
+        # symlink source/topic -> dest/topic/source
+        # get absolute directory of target
+        {
+            pushd "$dest/$topic/$source"
+            linktarget=`pwd`
+            popd
+        }
+        linkname="$source/$topic"
+        if [[ -z $quiet ]]; then
+            echo "linktarget=$linktarget"
+            echo "linkname=$linkname"
+            echo "ln -s -T \"$linktarget\" \"$source/$topic\""
+        fi
+        ln -s -T "$linktarget" "$linkname"
+    fi
+else
+    [[ -z $quiet ]] && echo "$source/$topic does not exist."
+    exit 2
+fi
