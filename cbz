@@ -38,20 +38,30 @@ done
 
 dir="$1"
 cbzname="${2:-${dir%/}}.cbz"
-if [[ -z $quiet ]]; then
-    echo "zip -r" $force "'$cbzname'" "'$dir'" $quiet
-fi
+
 if [[ -z $force ]] && [[ -f "$dir.cbz" ]]; then
     [[ -z $quiet ]] && echo ".cbz file exists"
     exit 2
 fi
 
+# =====
+# force
+# =====
 if [[ -n $force ]]; then
+    # if CBZNAME is a valid zip file, zip with -f and exit
+    # else remove CBZNAME and continue
     if $(unzip -t "$cbzname" >&/dev/null); then
+        [[ -z $quiet ]] && echo "zip -r -f" "'$cbzname'" "'$dir'" $quiet
         eval "zip -r -f" "'$cbzname'" "'$dir'" $quiet
         exit 0
     else
+        [[ -z $quiet ]] && echo "rm '$cbzname'" $quiet
         rm "$cbzname"
     fi
 fi
+
+# ===
+# zip
+# ===
+[[ -z $quiet ]] && echo "zip -r" "'$cbzname'" "'$dir'" $quiet
 eval "zip -r" "'$cbzname'" "'$dir'" $quiet
