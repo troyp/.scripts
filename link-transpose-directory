@@ -63,12 +63,11 @@ if [[ -d "$source/$topic" ]]; then
         [[ -z $quiet ]] && echo "mv -i \"$source/$topic\" \"$dest/$topic/$source\""
         mv -i "$source/$topic" "$dest/$topic/$source"
         # symlink source/topic -> dest/topic/source
-        # get absolute directory of target
-        {
-            pushd "$dest/$topic/$source"
+        (
+            # get absolute directory of target
+            cd "$dest/$topic/$source"
             linktarget=`pwd`
-            popd
-        }
+        )
         linkname="$source/$topic"
         if [[ -z $quiet ]]; then
             echo "linktarget=$linktarget"
