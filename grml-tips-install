@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# TODO:
+# 1. uninstall option
+# 2. force option to overwrite existing files
+# 3. option to update repo and reinstall
+
+if [[ "$1" =~ ^--?h(elp)?$ ]]; then
+    cat <<EOF
+grml-tips-install [-h|-g]
+    Install grml-tips.
+    Installs from the current directory, or with -g, downloads the git-tips
+    repository into the current directory and cds into it.
+
+    Options:
+      -h --help     display this help
+      -g --git      clone grml-tips git repo into current directory
+EOF
+    shift
+fi
+if [[ "$1" =~ ^--?g(it)?$ ]]; then
+    echo -n "cloning https://github.com/grml/grml-tips.git ..."
+    if git clone https://github.com/grml/grml-tips.git; then
+        echo "OK."
+    else
+        echo "Failed."
+        exit 1
+        cd grml-tips
+    fi
+fi
+
+echo "Making directory /usr/share/grml-tips ..."
+sudo mkdir /usr/share/grml-tips
+echo "Copying grml_tips to /usr/share/grml-tips ..."
+sudo cp grml_tips /usr/share/grml-tips/
+echo "Making directory /usr/lib/grml-tips ..."
+sudo mkdir /usr/lib/grml-tips
+echo "Copying grml-tips-tags to /usr/lib/grml-tips ..."
+sudo cp grml-tips-tags /usr/lib/grml-tips/
+echo -n "Running grml-tips-tags ... "
+if sudo /usr/lib/grml-tips/grml-tips-tags; then
+    echo "OK."
+else
+    echo "Failed."
+    while read -r -p "Continue? [y/n] " answer; do
+        case `echo $answer | tr 'A-Z' 'a-z'` in
+            y|yes)
+                break
+                ;;
+            n|no)
+                exit 2
+        esac
+    done
+fi
+echo "Copying grml-tips to /usr/bin ..."
+sudo cp grml-tips /usr/bin/
+
+echo "Done."
