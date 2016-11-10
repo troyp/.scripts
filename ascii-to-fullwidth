@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+
+for line in sys.stdin:
+    for char in line:
+        if char == " ":
+            sys.stdout.write("　")    # ideographic space
+        else:
+            code_pt = ord(char)
+            sys.stdout.write(unichr(code_pt + 0xFEE0))
+    sys.stdout.write("\n")
+
+
