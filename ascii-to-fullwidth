@@ -5,11 +5,13 @@ import sys
 
 for line in sys.stdin:
     for char in line:
+        code_pt = ord(char)
         if char == " ":
             sys.stdout.write("　")    # ideographic space
-        else:
-            code_pt = ord(char)
+        elif 32 < code_pt < 128:
             sys.stdout.write(unichr(code_pt + 0xFEE0))
+        else:
+            sys.stdout.write(char)
     sys.stdout.write("\n")
 
 
