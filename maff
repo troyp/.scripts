@@ -1,49 +1,111 @@
-function printhelp () {
-    printf -- "Usage: maff [OPTION]... [DIRECTORY]\n"
-    printf -- "Convert an HTML directory containing an index.html file into a .maff file.\n"
-    printf -- "\n"
-    printf -- "-h -? \t display this help and exit\n"
-    printf -- "-o   \t specify output filename\n"
-    printf -- "-q   \t suppress output\n"
-    printf -- "-u   \t convert spaces in directory name to underscores\n"
+#!/usr/bin/env bash
+
+# ,---------------,
+# | Help Function |
+# '---------------'
+
+printhelp () {
+    cat <<'EOF'
+Usage: maff [OPTION]... [DIRECTORY]
+
+Convert an HTML directory containing an index.html file into a .maff file.
+Options:
+  -h            display this help and exit
+  -i rel_addr   create index.html file which redirects to rel_addr
+  -o outname    specify output filename
+  -q            suppress archive output; again to suppress all output
+  -u            convert spaces in directory name to underscores
+EOF
 }
+
+# ,------------------,
+# | Options Handling |
+# '------------------'
 
 NAMEOPT='d'
 QUIET=''
-while getopts :h?o:uq opt; do
+CREATEINDEX=''
+while getopts hi:o:uq opt; do
     case "$opt" in
-      h|\?)
-	printhelp
-	exit
-    	;;
-      o)
-    	NAMEOPT='c'
-    	archive_name="$OPTARG"
-    	;;
-      u)
-    	NAMEOPT='u'
-    	;;
-      q)
-    	QUIET='t'
-    	;;
+        h)   printhelp
+             exit
+             ;;
+        i)   CREATEINDEX='t'
+             startfile="$OPTARG"
+             ;;
+        o)   NAMEOPT='c'
+             archive_name="$OPTARG"
+             ;;
+        u)   NAMEOPT='u'
+             ;;
+        q)   if [[ -z $QUIET ]]; then
+                 QUIET='q'
+             else
+                 QUIET='qq'
+             fi
+             ;;
     esac
 done
+shift $((OPTIND - 1))
+dir="$1"
 
-shift $((OPTIND-1))
+# ,-------------------,
+# | Create Index File |
+# '-------------------'
+
+if [[ -n $CREATEINDEX ]]; then
+    if [[ -f "$dir/index.html" ]]; then
+        if [[ $QUIET != "qq" ]]; then
+            echo "-i specified, but top level index.html file already exists in '$dir'" >&2
+        fi
+        exit 1
+    fi
+    > "$dir/index.html" cat <<'EOF'
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=$startfile" />
+  </head>
+</html>
+EOF
+fi
+
+# ,-----------------,
+# | Output Filename |
+# '-----------------'
 
 case $NAMEOPT in
-  c)
-    ;;
-  d)
-    archive_name="${1%/}.maff"
-    ;;
-  u)
-    archive_name=`echo "${1%/}" | sed -e 's/ /_/g'`.maff
-    ;;
+    c)  ;;
+    d)  archive_name="${dir%/}.maff"
+        ;;
+    u)  archive_name=`echo "${dir%/}" | sed -e 's/ /_/g'`.maff
+        ;;
 esac
 
-if [[ $QUIET ]]; then
-    7z a -tzip "$archive_name" "$1" >> /dev/null
-else
-    7z a -tzip "$archive_name" "$1" 
+# ,------------------,
+# | Debugging Output |
+# '------------------'
+
+if [[ -n $DEBUG ]]; then
+    >&2 cat <<EOF
+dir: $dir
+NAMEOPT: $NAMEOPT
+QUIET: $QUIET
+CREATEINDEX: $CREATEINDEX
+startfile: $startfile
+archive_name: $archive_name
+EOF
 fi
+
+# ,---------------------,
+# | Create MAFF Archive |
+# '---------------------'
+
+if [[ ! -f "$dir/index.html" ]]; then
+    [[ $QUIET != "qq" ]] && echo "No top level index.html file in '$dir'" >&2
+    exit 1
+fi
+case $QUIET in
+    [])  7z a -tzip "$archive_name" "$dir" ;;
+    q)   7z a -tzip "$archive_name" "$dir" >/dev/null ;;
+    qq)  7z a -tzip "$archive_name" "$dir" &>/dev/null ;;
+esac
