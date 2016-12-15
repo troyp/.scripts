@@ -14,18 +14,38 @@ parser = argparse.ArgumentParser(description='Rename files to swap page order we
 parser.add_argument('-o', '--omit', type=list, nargs='+', default=[0], help='pages to omit')
 parser.add_argument('-n', '-noaction', '--no-action', dest="noaction", action='store_true',
                     help="no action: print pairs, but don't rename")
+parser.add_argument('--nolog', dest="log", action='store_false',
+                    help='don\'t create a log of changes')
 parser.add_argument('directory', nargs='?', default='.', help='directory')
 args = parser.parse_args()
 
 os.chdir(args.directory)
+if args.log:
+    logdir = os.getenv('HOME') + '/.ren-manga-log.d'
+    try:
+        os.mkdir(logdir)
+    except FileExistsError:
+        pass
+    logname = os.path.realpath(os.curdir)[1:].replace('/', '__')
+    log = open(logdir+'/'+logname, 'w+')
 files = os.listdir('.')
+try:
+    files.remove('.ren-manga-swap-order-log')
+except ValueError:
+    pass
 files.sort()
 pairs = [files[i] for i in range(len(files)) if i not in args.omit]
 for (f1,f2) in grouper(pairs, 2):
+    if f2 is None:
+        continue
     if args.noaction:
         print("%s <-> %s" % (f1,f2))
     else:
+        if args.log:
+            log.writelines("f1='%s'; f2='%s'\n" % (f1,f2))
         temp = f1 + '_old'
         os.rename(f1, temp)
         os.rename(f2, f1)
         os.rename(temp, f2)
+if args.log:
+    log.close()
