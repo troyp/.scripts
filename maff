@@ -105,7 +105,7 @@ if [[ ! -f "$dir/index.html" ]]; then
     exit 1
 fi
 case $QUIET in
-    [])  7z a -tzip "$archive_name" "$dir" ;;
     q)   7z a -tzip "$archive_name" "$dir" >/dev/null ;;
     qq)  7z a -tzip "$archive_name" "$dir" &>/dev/null ;;
+    *)   7z a -tzip "$archive_name" "$dir" ;;
 esac
