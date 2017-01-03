@@ -60,7 +60,7 @@ if [[ -n $CREATEINDEX ]]; then
         fi
         exit 1
     fi
-    > "$dir/index.html" cat <<'EOF'
+    > "$dir/index.html" cat <<EOF
 <html>
   <head>
     <meta http-equiv="refresh" content="0; url=$startfile" />
