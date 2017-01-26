@@ -3,7 +3,7 @@
 # converts anime episode list CSV (generated using .pentadactylrc command `table2csv`)
 # into a list of file names in format:  `number - english ・ romaji (japanese)`
 
-my $usage = "Usage: name-anime-from-wp [OPTION...] [FILE]
+my $usage = "Usage: animeepisodes-from-wp [OPTION...] [FILE]
 
     -h\tShow this help text
     -o\tOnly process odd lines
