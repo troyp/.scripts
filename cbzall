@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+PARSED=$(getopt -n "$0" -o hfq --long "help,force,quiet"  -- "$@")
+if [ $? -ne 0 ]; then echo "getopt error"; return 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "$1" in
+        -h|--help)
+            cat <<EOF
+cbzall [-h] [-f] [-q] DIR
+Create a comic book archive (CBZ) file from each subdirectory of images.
+
+Options:
+-h --help           display this help
+-f --force          overwrite (update) existing archives
+-q --quiet          quiet mode
+EOF
+            shift
+            exit 0
+            ;;
+        -f|--force)
+            opts="${opts}--force "
+            shift
+            ;;
+        -q|--quiet)
+            opts="${opts}--quiet "
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            opts="$opts$1 "
+            shift
+            ;;
+    esac
+done
+
+dir="${1:-.}"
+for subdir in "$dir"/*/; do
+    eval "cbz " "$opts" "'$subdir'"
+done
