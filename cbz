@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-PARSED=$(getopt -n "$0" -o hfq: --long "help,force,quiet"  -- "$@")
+PARSED=$(getopt -n "$0" -o hfq --long "help,force,quiet"  -- "$@")
 if [ $? -ne 0 ]; then echo "getopt error"; return 1; fi
 eval set -- "$PARSED"
 while true; do
@@ -48,10 +48,10 @@ fi
 # force
 # =====
 if [[ -n $force ]]; then
-    # if CBZNAME is a valid zip file, zip with -f and exit
+    # if CBZNAME is a valid zip file, zip with -FS and exit
     # else remove CBZNAME and continue
     if $(unzip -t "$cbzname" >&/dev/null); then
-        [[ -z $quiet ]] && echo "zip -r -f" "'$cbzname'" "'$dir'" $quiet
+        [[ -z $quiet ]] && echo "zip -r -FS" "'$cbzname'" "'$dir'" $quiet
         eval "zip -r -f" "'$cbzname'" "'$dir'" $quiet
         exit 0
     else
