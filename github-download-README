@@ -1,16 +1,75 @@
 #! /usr/bin/env sh
 
-author="$1";
-repo="$2";
-output_dir="${3:-/opt/docs}";
-tempdir=`mktemp -d`;
+PARSED=$(getopt -n "$0" -o hqHo:d: --long "help,quiet,here,output-file,output-prefix"  -- "$@")
+if [ $? -ne 0 ]; then echo "getopt error"; exit 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "$1" in
+        -h|--help)
+            cat <<EOF
+github-download-README AUTHOR REPO
+github-download-README AUTHOR REPO OUTPUT_DIR
+github-download-README URL
+EOF
+            shift
+            ;;
+        -q|--quiet)
+            quiet="true"
+            shift
+            ;;
+        -H|--here)
+            output_dir="."
+            shift
+            ;;
+        -o|--output-file)
+            output_prefix="$2"
+            shift 2
+            ;;
+        -d|--output-dir)
+            output_dir="$2"
+            shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+    esac
+done
 
-cd $tempdir;
-url="https://github.com/$author/$repo.git";
-git clone "$url";
-cd "$repo";
+case "$#" in
+    1) suburl="${1#*://github.com/}"
+       author="${suburl%/*}"
+       repourl="${suburl#*/}"
+       repo="${repourl%/*}"
+       ;;
+    2) author="$1"
+       repo="$2"
+       ;;
+    3)  author="$1"
+        repo="$2"
+        output_dir="$3"
+        ;;
+esac
+
+output_dir="${output_dir:-/opt/doc}"
+output_prefix="${output_prefix:-$repo-}"
+tempdir=`mktemp -d`
+
+if [[ -n $DEBUG ]]; then
+    echo "author: $author"
+    echo "repo: $repo"
+    echo "output_dir: $output_dir"
+    echo "output_prefix: $output_prefix"
+    echo "quiet: $quiet"
+    exit
+fi
+
+cd $tempdir
+url="https://github.com/$author/$repo.git"
+git clone "$url"
+cd "$repo"
 
 for f in *README*; do
-    echo "copying $f to $output_dir"/"$repo-$f"
-    mv "$f" "$output_dir"/"$repo-$f"
-done;
+    $quiet || echo "copying $f to $output_dir"/"${output_prefix}$f"
+    mv "$f" "$output_dir"/"${output_prefix}$f"
+done
