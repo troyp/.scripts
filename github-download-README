@@ -71,7 +71,7 @@ url="https://github.com/$author/$repo.git"
 git clone "$url"
 cd "$repo"
 
-for f in *README*; do
+for f in *README* *readme*; do
     $quiet || echo "copying $f to $output_dir"/"${output_prefix}$f"
     mv "$f" "$output_dir"/"${output_prefix}$f"
 done
