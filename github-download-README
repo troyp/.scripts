@@ -1,4 +1,6 @@
-#! /usr/bin/env sh
+#! /usr/bin/env bash
+
+shopt -s nullglob
 
 PARSED=$(getopt -n "$0" -o hqHo:d: --long "help,quiet,here,output-file,output-prefix"  -- "$@")
 if [ $? -ne 0 ]; then echo "getopt error"; exit 1; fi
