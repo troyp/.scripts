@@ -1,0 +1,12 @@
+#! /bin/bash
+
+while IFS= read -r line; do
+    n=`printf "%s" "$line" | wc -c`;
+    stripped=`printf "%s\n" "$line" | sed 's/\/\/.*$//'`;
+    ns=`printf "%s" "$stripped" | wc -c`;
+    diff=$((n - ns));
+    # echo $diff
+    printf "%s" $stripped;
+    printf " %.0s" $diff;
+    printf "\n";
+done

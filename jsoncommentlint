@@ -1,0 +1,17 @@
+#! /bin/bash
+
+(
+    count=$(($# - 1));
+    lastarg="${@: -1}";
+    if [[ "$#" == 0 || lastarg =~ -.* ]]; then
+        # stdin input
+        cat | whiteout-slash-comments | jsonlint "$@";
+    else
+        # file input
+        tmpdir=`mktemp -d`;
+        filename="${lastarg##*/}";
+        cat "$lastarg" | whiteout-slash-comments > $tmpdir/$filename;
+        jsonlint "${@: 1: $count}" $tmpdir/$filename;
+    fi
+)
+
