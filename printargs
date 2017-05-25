@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+i=1;
+for arg in "$@"; do
+    printf "%d\t%s\n" $i "$arg";
+    i=$((i+1));
+done;
