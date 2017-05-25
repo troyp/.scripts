@@ -25,13 +25,15 @@ EOF
 NAMEOPT='d'
 QUIET=''
 CREATEINDEX=''
-while getopts hi:o:uq opt; do
+while getopts hi:Io:uq opt; do
     case "$opt" in
         h)   printhelp
              exit
              ;;
         i)   CREATEINDEX='t'
              startfile="$OPTARG"
+             ;;
+        I)   SELECTINDEX='t'
              ;;
         o)   NAMEOPT='c'
              archive_name="$OPTARG"
@@ -53,13 +55,22 @@ dir="$1"
 # | Create Index File |
 # '-------------------'
 
-if [[ -n $CREATEINDEX ]]; then
+if [[ -n $CREATEINDEX || -n $SELECTINDEX ]]; then
+    # check that index.html doesn't already exist
     if [[ -f "$dir/index.html" ]]; then
         if [[ $QUIET != "qq" ]]; then
             echo "-i specified, but top level index.html file already exists in '$dir'" >&2
         fi
         exit 1
     fi
+    # if -I was passed:
+    if [[ -n $SELECTINDEX ]]; then
+        until [[ -f $startfile_abs ]]; do
+            startfile_abs=$(dialog --stdout --title "index.html target" --fselect $dir/ 14 48)
+            startfile="${startfile_abs#$dir/}"
+        done
+    fi
+    # create index.html
     > "$dir/index.html" cat <<EOF
 <html>
   <head>
