@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# ,---------------,
+# | Help Function |
+# '---------------'
+
+printhelp () {
+    cat <<'EOF'
+Usage: cbr2cbz [OPTION]... [FILE]
+
+Options:
+  -D            delete original CBR file
+  -h            display this help and exit
+  -o outname    specify directory name & CBZ base filename (no extension)
+  -s            convert spaces in directory name to dashes
+  -S            convert spaces in directory name to underscores
+  -q            suppress archive output; again to suppress all output
+EOF
+}
+
+# ,------------------,
+# | Options Handling |
+# '------------------'
+
+NAMEOPT='a'
+QUIET=''
+while getopts Dho:sSq opt; do
+    case "$opt" in
+        D)   DELETE_ORIG='true';
+             ;;
+        h)   printhelp
+             exit
+             ;;
+        o)   NAMEOPT='c'
+             base_name="$OPTARG"
+             ;;
+        q)   if [[ -z $QUIET ]]; then
+                 QUIET='q'
+             else
+                 QUIET='qq'
+             fi
+             ;;
+        s)   NAMEOPT='-'
+             ;;
+        S)   NAMEOPT='_'
+             ;;
+    esac
+done
+shift $((OPTIND - 1))
+cbr="$1";
+
+# ,-----------------,
+# | Output Filename |
+# '-----------------'
+
+base_name="${base_name:-${cbr%.*}}";
+case $NAMEOPT in
+    a)  ;;
+    -)  base_name="${base_name/ /-}";
+        ;;
+    _)  base_name="${base_name/ /_}";
+        ;;
+esac
+
+cbz="$base_name.cbz";
+
+# ,----------------------,
+# | Extract to Directory |
+# '----------------------'
+
+mkdir "$base_name";
+7z x "$cbr" -o"$base_name";
+
+# ,------------------,
+# | Debugging Output |
+# '------------------'
+
+if [[ -n $DEBUG ]]; then
+    >&2 cat <<EOF
+cbr: $cbr
+base_name: $base_name
+NAMEOPT: $NAMEOPT
+QUIET: $QUIET
+cbz: $cbz
+EOF
+fi
+
+# ,--------------------,
+# | Create CBZ Archive |
+# '--------------------'
+
+case $QUIET in
+    q)   7z a -tzip "$cbz" "$base_name" >/dev/null ;;
+    qq)  7z a -tzip "$cbz" "$base_name" &>/dev/null ;;
+    *)   7z a -tzip "$cbz" "$base_name" ;;
+esac
+
+# ,--------------,
+# | Delete Files |
+# '--------------'
+
+# trash "$base_name";
+
+# FIXME
+# option DELETE_ORIG: delete CBR if contents of CBZ match those of CBR
+if [[ -n $DELETE_ORIG ]]; then
+    if diff <(rar l "$cbr" | tail -n +10 | head -n -3 | tr -s ' ' | cut -d' ' -f 6-)
+       \    <(zip -sf "$cbz" | tail -n +3 | head -n -1 | while read -r x || [[ -n $x ]]; do
+                  echo "${${x#*/}%/}";
+              done); then
+        trash "$cbr";
+    else
+        [[ $QUIET != "qq" ]] && cat <<EOF
+Error: contents of CBZ do no match contents of original.
+Not deleting original
+EOF
+    fi
+fi;
