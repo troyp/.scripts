@@ -1,0 +1,33 @@
+#! /bin/bash
+
+if [[ "$1" =~ ^-h$\|^--help$ ]]; then
+    cat <<EOF
+take FILE NUM
+    Print NUM lines randomly from FILE. If FILE is '-', or if FILE is omitted,
+    standard input is used.
+EOF
+    return 0; fi;
+
+
+# stdin input
+if [[ "$#" == 1 || "$1" == - ]]; then
+    file=`mktemp`;
+    cat > $file;
+    num="$1";
+# file input
+else
+    file="$1"
+    num="$2";
+fi
+
+python -c "
+with open('$file', 'r') as file:
+    f = [line for line in file]
+    n = int('$num')
+    N = len(f)
+    import random, sys, time
+    random.seed(time.time())
+    perm = random.sample(range(N), n)
+    for i in perm:
+        sys.stdout.write(f[i])
+"
