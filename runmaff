@@ -23,9 +23,8 @@ safename=`echo "$basename" | tr " \t" "__"`
 
 program="${2:-xdg-open}"
 
-if [ ! -d /tmp/runmaff/ ]; then
-	mkdir /tmp/runmaff/
-fi
+mkdir -p /tmp/runmaff/
+
 dir=`mktemp -d "/tmp/runmaff/$safename.XXXX"`
 echo "temp dir: $dir" >&3
 {
