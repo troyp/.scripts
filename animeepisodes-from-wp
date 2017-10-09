@@ -32,16 +32,16 @@ my $f = @ARGV>0 ? $ARGV[0] : '-';
 open IN, "< $f" or die "$0: open $f failed, code $!\n";
 while ( defined ($_=<IN>) ) {
     unless ( $odd_only && $. % 2 ) {
-        if ($ignore_second) {
-            s/"(\d+)","[^"]","""([^"]+)" (?:"([^"]+)"([^"]+) ")?.*/$1 - $2 ・ $3$4/;
-        }
-        else {
-            s/"(\d+)","""([^"]+)" (?:"([^"]+)"([^"]+) ")?.*/$1 - $2 ・ $3$4/;
-        }
+        if ($ignore_second) { s/([^,]+),([^,]+),(.*)",.*/$1,$3/; }
+
+        s/([^,]+,[^,]+)",.*/$1/;
+        s/"(\d+)","""([^"]+)" (?:"([^"]+)"([^"]+?))?(\s| )*$/$1 - $2 ・ $3$4/;
+
         # if string ends in " ・ " (ie. no japanese name), delete the " ・ ".
         # note: \xe3\x83\xbb is "・" as an 8-bit string.
         s/ \xe3\x83\xbb $//;
-        print;
+        print "$_\n";
+
     }
 }
 
