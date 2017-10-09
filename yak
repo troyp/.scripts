@@ -24,15 +24,21 @@ TERMINAL_ID_2=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminal
 qdbus org.kde.yakuake /yakuake/tabs setTabTitle ${SESSION_ID_2} "Pylab"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_2} "ipython --pylab -i ~/.pylab"
 
-# TOP/IOTOP - split session
+# # TOP/IOTOP - split session
+# SESSION_ID_3=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.addSession)
+# # ID for left terminal:
+# TERMINAL_ID_3A=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId ${SESSION_ID_3})
+# qdbus org.kde.yakuake /yakuake/tabs setTabTitle ${SESSION_ID_3} "Top"
+# qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_3A} "htop"
+# # ID for right terminal:
+# # TERMINAL_ID_3B=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId ${SESSION_ID_3} | cut -d, -f2)
+# TERMINAL_ID_3B=$((TERMINAL_ID_3A + 1))
+# qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.splitTerminalLeftRight ${TERMINAL_ID_3A}
+# qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_3B} "sudo iotop"
+
+# TOP
 SESSION_ID_3=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.addSession)
-# ID for left terminal:
-TERMINAL_ID_3A=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId ${SESSION_ID_3})
+TERMINAL_ID_3=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId ${SESSION_ID_3})
 qdbus org.kde.yakuake /yakuake/tabs setTabTitle ${SESSION_ID_3} "Top"
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_3A} "htop"
-# ID for right terminal:
-# TERMINAL_ID_3B=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId ${SESSION_ID_3} | cut -d, -f2)
-TERMINAL_ID_3B=$((TERMINAL_ID_3A + 1))
-qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.splitTerminalLeftRight ${TERMINAL_ID_3A}
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_3B} "sudo iotop"
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal ${TERMINAL_ID_3} "htop"
 
