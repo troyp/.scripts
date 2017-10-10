@@ -11,7 +11,9 @@ def grouper(iterable, n, fillvalue=None):
     return zip_longest(*args, fillvalue=fillvalue)
 
 parser = argparse.ArgumentParser(description='Rename files to swap page order western <-> manga.')
-parser.add_argument('-o', '--omit', type=list, nargs='+', default=[0], help='pages to omit')
+parser.add_argument('-o', '--omit',
+                    type=lambda s: [int(e) for e in s.split(',')],
+                    default=[1], help='pages to omit (1-based)')
 parser.add_argument('-n', '-noaction', '--no-action', dest="noaction", action='store_true',
                     help="no action: print pairs, but don't rename")
 parser.add_argument('--nolog', dest="log", action='store_false',
@@ -34,7 +36,7 @@ try:
 except ValueError:
     pass
 files.sort()
-pairs = [files[i] for i in range(len(files)) if i not in args.omit]
+pairs = [files[i] for i in range(len(files)) if i+1 not in args.omit]
 for (f1,f2) in grouper(pairs, 2):
     if f2 is None:
         continue
