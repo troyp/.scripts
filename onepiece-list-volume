@@ -34,7 +34,7 @@ Usage: onepiece_list_vol_chs [OPTION...] N
 Options:
   -h, --help             show help
   -b, --bypass-cache     ignore cache files in $ONEPIECE_VOLUME_DATA
-  -c, --cache-listings   generate cache files in $ONEPIECE_VOLUME_DATA
+  -c, --generate-cache   generate cache files in $ONEPIECE_VOLUME_DATA
   -v, --verbose          show stderror output
 EOF
     exit 0;
@@ -47,7 +47,7 @@ while [[ $# -gt 1 ]]; do
         (-b|--bypass-cache)
             bypass='t';
             shift 1; ;;
-        (-g | --generate-cache)
+        (-c | --generate-cache)
             maxvol="$2";
             (
                 cd "$ONEPIECE_VOLUME_DATA";
