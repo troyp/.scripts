@@ -1,0 +1,18 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+  $usage="Usage: linesbetween 'STARTPATTERN' 'ENDPATTERN' [FILE]
+Print lines from one matching STARTPATTERN to one matching ENDPATTERN.";
+  @ARGV > 0 or warn "$usage\n" and exit 31;     # 31: no arg
+  $pattern1=shift;
+  $pattern2=shift;
+  defined $pattern1 and defined $pattern2 or
+    warn "$usage\n" and exit 27;
+}
+
+/$pattern1/ and $printing = 1;
+if ($printing) {
+  print $_;
+  /$pattern2/ and $printing = 0;
+}
+
