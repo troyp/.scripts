@@ -56,6 +56,12 @@ while [[ $# -gt 1 ]]; do
                 done;
             )
             shift 2 ;;
+        (-C | --generate-cache-here)
+            maxvol="$2";
+            for vol in `seq $maxvol`; do
+                list_volume_chapters $vol > "vol-$(printf '%03d' $vol)";
+            done;
+            shift 2 ;;
         (-v|--verbose)
             verbose='t';
             shift 1; ;;
