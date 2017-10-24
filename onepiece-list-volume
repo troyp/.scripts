@@ -1,0 +1,74 @@
+#! /bin/bash
+
+# Print chapters in One Piece tankōbon vol. N
+# Data scraped from the One Piece Wiki at:
+#     http://onepiece.wikia.com/wiki/Chapters_and_Volumes
+
+list_volume_chapters() {
+    if [[ -n $verbose ]]; then
+        exec 3>&2;
+    else
+        exec 3>/dev/null;
+    fi;
+    url='http://onepiece.wikia.com/wiki/Chapters_and_Volumes';
+    {
+        curl "$url" |
+            hxclean |
+            hxselect -c "table#Volume_$1>tbody>tr>td>table.collapsible>tbody>tr:nth-of-type(5)>td:first-child>ul" |
+            lynx -stdin -dump |
+            sed '/^References/,$d' |
+            perl -pe 's/\[\d+\]//g' |
+            perl -ne 'chomp; print "\n" if ($_ =~ /^     /); print "$_"' |
+            sed 's/^ *//' |
+            sed '/^$/d' ;
+        echo;
+    } 2>&3;
+}
+
+# ----- options -----
+if [[ "$1" =~ ^-h$|^--help$ ]]; then
+    cat <<EOF
+Usage: onepiece_list_vol_chs [OPTION...] N
+    Print chapters in One Piece tankōbon vol. N
+
+Options:
+  -h, --help             show help
+  -b, --bypass-cache     ignore cache files in $ONEPIECE_VOLUME_DATA
+  -c, --cache-listings   generate cache files in $ONEPIECE_VOLUME_DATA
+  -v, --verbose          show stderror output
+EOF
+    exit 0;
+fi;
+
+while [[ $# -gt 1 ]]; do
+    case "$1" in
+        (-h | --help)
+            shift 1; ;;
+        (-b|--bypass-cache)
+            bypass='t';
+            shift 1; ;;
+        (-g | --generate-cache)
+            maxvol="$2";
+            (
+                cd "$ONEPIECE_VOLUME_DATA";
+                for vol in `seq $maxvol`; do
+                    list_volume_chapters $vol > "vol-$(printf '%03d' $vol)";
+                done;
+            )
+            shift 2 ;;
+        (-v|--verbose)
+            verbose='t';
+            shift 1; ;;
+        (*) echo "unrecognized option: $1"
+            return 1 ;;
+    esac
+done
+# --- end options ---
+
+cachefile="$ONEPIECE_VOLUME_DATA"/vol-$(printf '%03d' $1);
+if [[ -n $ONEPIECE_VOLUME_DATA ]] && [[ -f "$cachefile" ]] && [[ -z $bypass ]]; then
+    cat "$cachefile";
+    exit;
+fi;
+
+list_volume_chapters $1;
