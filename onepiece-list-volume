@@ -32,10 +32,11 @@ Usage: onepiece_list_vol_chs [OPTION...] N
     Print chapters in One Piece tankōbon vol. N
 
 Options:
-  -h, --help             show help
-  -b, --bypass-cache     ignore cache files in $ONEPIECE_VOLUME_DATA
-  -c, --generate-cache   generate cache files in $ONEPIECE_VOLUME_DATA
-  -v, --verbose          show stderror output
+  -h, --help                   show help
+  -b, --bypass-cache           ignore cache files in $ONEPIECE_VOLUME_DATA
+  -c, --generate-cache         generate cache files in $ONEPIECE_VOLUME_DATA
+  -C, --generate-cache-here    generate cache files in current directory
+  -v, --verbose                show stderror output
 EOF
     exit 0;
 fi;
