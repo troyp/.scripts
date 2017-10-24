@@ -1,0 +1,16 @@
+#! /usr/bin/python
+
+import pint
+ur = pint.UnitRegistry()
+Q_ = ur.Quantity
+
+def main(num, from_unit, to_unit):
+    """ Convert quantities from one unit to another. """
+    num = float(num)
+    from_unit.replace("^", "**")
+    to_unit.replace("^", "**")
+    quant = Q_(num, from_unit)
+    print(quant.to(to_unit))
+
+if __name__ == '__main__':
+    import plac; plac.call(main)
