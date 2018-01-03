@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ "$1" =~ ^-h$|^--help$ ]]; then
+    cat <<EOF
+Print contents of:
+  $SH_ALIAS_FILE
+  All files listed in $SH_FUNCTION_FILES
+  All scripts in $SCRIPTS_DIRECTORY
+EOF
+    return 0; fi;
+IFS=:
+files="$SH_ALIAS_FILE:$SH_FUNCTION_FILES";
+filesarr=(${files});
+for f in "${filesarr[@]}"; do
+    cat ${f//\~/$HOME};
+    echo;
+done;
+for f in $SCRIPTS_DIRECTORY/*; do
+    echo "$f";
+    echo;
+    cat "$f";
+    echo;
+done;
