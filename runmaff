@@ -63,9 +63,9 @@ echo "temp dir: $dir" >&3
       echo "safename: $safename";
       echo "program: $program";
       echo "dir: $dir";
-	    echo ./"$basename"/index.html
+	    echo "index file: " */index.html
 
   else
-	    "$program" ./"$basename"/index.html >&3
+	    "$program" */index.html >&3
   fi;
 }
