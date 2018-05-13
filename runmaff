@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-if [[ "$1" =~ ^--?h(elp)?$ ]]; then
-    cat <<EOF
+PARSED=$(getopt -n "$0" -o hfq --long "help,quiet,debug"  -- "$@")
+if [ $? -ne 0 ]; then echo "getopt error"; return 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "$1" in
+        -h|--help)
+            cat <<EOF
 runmaff [-h] [-q] file [program]
     Run a MAFF file using default or chosen program for HTML files.
 
@@ -13,22 +18,28 @@ runmaff [-h] [-q] file [program]
       -q --quiet   do not print messages
       --debug      show debugging info
 EOF
-    exit;
-fi;
+            shift
+            exit 0
+            ;;
+        -q|--quiet)
+            quiet="&>/dev/null"
+            shift
+            ;;
+        --debug)
+            debug=true
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
 
 exec 3>&1;
-
-while [[ "$1" =~ "^-" ]]; do
-    case "$1" in
-        (-q | --quiet)
-            exec 3>/dev/null;
-            shift ;;
-        (--debug)
-            debug=true;
-            shift ;;
-    esac;
-done;
-
 
 filepath=`realpath "$1"`
 filename="${filepath##*/}"
