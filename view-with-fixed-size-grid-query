@@ -1,0 +1,17 @@
+#! /bin/bash
+
+# eg: view-with-grid myimage.png 100x80
+#     view-with-grid myimage.png 100
+
+file="$1";
+cellinput=$(zenity --forms --title="Cell Size" --add-entry="Width" --add-entry="Height" 2>/dev/null);
+w="${cellinput%|*}";
+h="${cellinput#*|}";
+[[ -z $h ]] && h=$w;
+cropspec="${w}x${h}";
+grid_colour="${2:-black}";
+convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 -border $borderspec $outfile
+tempfile=`tempfile -s .$ext`;
+
+convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
+display $tempfile;

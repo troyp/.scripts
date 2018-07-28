@@ -1,0 +1,16 @@
+#! /bin/bash
+
+# eg: view-with-grid myimage.png 100x80
+#     view-with-grid myimage.png 100
+
+file="$1";
+cell="$2";
+w="${cell%x*}";
+h="${cell#*x}";
+cropspec="${w}x${h}";
+grid_colour="${3:-black}";
+convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 -border $borderspec $outfile
+tempfile=`tempfile -s .$ext`;
+
+convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
+display $tempfile;
