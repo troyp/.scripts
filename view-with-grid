@@ -1,0 +1,18 @@
+#! /bin/bash
+
+# eg: view-with-grid myimage.png 6x6
+
+file="$1";
+ext="${file##*.}";
+W=`convert "$file" -print "%w" /dev/null`;
+H=`convert "$file" -print "%h" /dev/null`;
+crop="$2";
+n="${crop%x*}";
+m="${crop#*x}";
+w="$((W/n))";
+h="$((H/m))";
+cropspec="${w}x${h}";
+tempfile=`tempfile -s .$ext`;
+
+convert "$file" -bordercolor black -background black -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
+display $tempfile;
