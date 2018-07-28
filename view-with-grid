@@ -12,7 +12,8 @@ m="${crop#*x}";
 w="$((W/n))";
 h="$((H/m))";
 cropspec="${w}x${h}";
+grid_colour="${3:-black}";
 tempfile=`tempfile -s .$ext`;
 
-convert "$file" -bordercolor black -background black -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
+convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
 display $tempfile;
