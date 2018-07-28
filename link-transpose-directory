@@ -33,6 +33,10 @@ EOF
             quiet="true"
             shift;
             ;;
+        -s|--symlink)
+            keep="-k "
+            shift;
+            ;;
         --)
             shift
             break
