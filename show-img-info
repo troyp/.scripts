@@ -1,0 +1,9 @@
+#! /bin/bash
+
+info=$(identify "$1");
+if which zenity; then
+    zenity --info --text="$info";
+else
+    xmessage "$info";
+fi;
+
