@@ -1,0 +1,21 @@
+#! /usr/bin/zsh
+
+file="$1";
+ext="${file##*.}";
+cellinput=$(zenity --entry --text "Cell Size" --entry-text="100" 2>/dev/null);
+colourinput_raw=$(zenity --color-selection --color red --show-palette 2>/dev/null);
+colourinput=${${colourinput_raw#*\(}%\)};
+w="$cellinput";
+wsub=$((w / 4.0));
+R="$(cut -d, -f1 <<<$colourinput)";
+G="$(cut -d, -f2 <<<$colourinput)";
+B="$(cut -d, -f3 <<<$colourinput)";
+
+tempfile1=`tempfile -s .$ext`;
+tempfile2=`tempfile -s .$ext`;
+gmic $file      -grid $wsub,$wsub,0,0,0.2,0xFFFFFFFF,$R,$G,$B -o $tempfile1;
+gmic $tempfile1 -grid $w,$w,0,0,1,0xFFFFFFFF,$R,$G,$B -o $tempfile2;
+
+display $tempfile2;
+>&2 echo $tempfile1;
+>&2 echo $tempfile2;

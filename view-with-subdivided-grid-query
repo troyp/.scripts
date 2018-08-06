@@ -1,0 +1,19 @@
+#! /usr/bin/zsh
+
+file="$1";
+ext="${file##*.}";
+cellinput=$(zenity --entry --text "Cell Size" --entry-text="100" 2>/dev/null);
+w="$cellinput";
+wsub=$((w / 4.0));
+R="${2:-0}";
+G="${2:-0}";
+B="${2:-0}";
+
+tempfile1=`tempfile -s .$ext`;
+tempfile2=`tempfile -s .$ext`;
+gmic $file      -grid $wsub,$wsub,0,0,0.2,0xFFFFFFFF,$R,$G,$B -o $tempfile1;
+gmic $tempfile1 -grid $w,$w,0,0,1,0xFFFFFFFF,$R,$G,$B -o $tempfile2;
+
+display $tempfile2;
+>&2 echo $tempfile1;
+>&2 echo $tempfile2;
