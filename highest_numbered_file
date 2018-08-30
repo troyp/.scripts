@@ -1,0 +1,17 @@
+#! /usr/bin/env zsh
+
+if [[ "$1" =~ ^-h$ || ^--help$ ]]; then
+    cat <<EOF
+Print the name of the file in directory DIR matching PREFIX with the highest number
+
+Usage: highest_numbered_file DIR PREFIX
+EOF
+    exit 0;
+fi;
+
+(
+    cd "${1:-.}";
+    highest=($2*<->*(n[-1]));
+    echo "$highest";
+
+)
