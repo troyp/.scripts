@@ -1,6 +1,6 @@
 #! /usr/bin/env zsh
 
-if [[ "$1" =~ ^-h$ || ^--help$ ]]; then
+if [[ "$1" =~ ^-h$ || "$1" =~ ^--help$ ]]; then
     cat <<EOF
 Print the name of the file in directory DIR matching PREFIX with the highest number
 
