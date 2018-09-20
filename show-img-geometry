@@ -1,0 +1,14 @@
+#! /bin/bash
+
+w=$(convert "$1" -print "%w" /dev/null);
+h=$(convert "$1" -print "%h" /dev/null);
+gcd=$(python3 -c "import math; print(math.gcd($w,$h))");
+
+info="width: $w\nheight: $h\ngcd(w,h)=$gcd";
+
+if which zenity; then
+    zenity --info --text="$info";
+else
+    xmessage "$info";
+fi;
+
