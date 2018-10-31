@@ -1,0 +1,8 @@
+#! /usr/bin/python3
+
+import sys, os
+from math import *
+from operator import *
+from itertools import *
+from functools import *
+print(eval("".join(sys.argv[1:])))
