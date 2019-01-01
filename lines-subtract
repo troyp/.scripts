@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [[ "$1" =~ ^-h$|^--help$ ]]; then
+    cat <<EOF
+lines-subtract FILE1 FILE2
+    Print the lines in FILE1 which do not occur in FILE2.
+
+    Options:
+      -h --help    display this help
+EOF
+    return 0; fi;
+
+working=`mktemp`;
+tempfile=`mktemp`;
+cp "$1" $working;
+cat "$2" | while read -r out_line || [[ -n $out_line ]]; do
+    grep -xvF "$out_line" "$working" > $tempfile;
+    old_working=$working;
+    working=$tempfile;
+    tempfile=$old_working;
+done;
+cat "$working";
