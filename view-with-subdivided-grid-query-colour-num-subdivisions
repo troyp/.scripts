@@ -3,7 +3,7 @@
 file="$1";
 ext="${file##*.}";
 cellinput=$(zenity --entry --text "Cell Size" --entry-text="100" 2>/dev/null);
-n=$(zenity --entry --text "Number of subdivisions" --entry-text="2" 2>/dev/null);
+n=$(zenity --entry --text "Number of subdivisions" --entry-text="4" 2>/dev/null);
 colourinput_raw=$(zenity --color-selection --color red --show-palette 2>/dev/null);
 colourinput=${${colourinput_raw#*\(}%\)};
 w="$cellinput";
