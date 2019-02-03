@@ -1,0 +1,9 @@
+#! /bin/bash
+
+file="$1";
+ext="${file##*.}";
+tempdir=`mktemp -d`;
+tempfile=`tempfile -s .$ext`;
+
+convert "$file" -separate $tempdir/channel.$ext;
+display $tempfile $tempdir/channel-0.$ext $tempdir/channel-1.$ext $tempdir/channel-2.$ext "$file";
