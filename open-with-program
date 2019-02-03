@@ -1,0 +1,6 @@
+#! /bin/bash
+
+file="$1";
+program=$(zenity --entry --title "Open with specified application" --text "program to use" 2>/dev/null);
+
+"$program" "$file";
