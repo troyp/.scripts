@@ -14,6 +14,6 @@ tempfile2=`tempfile -s .$ext`;
 gmic $file      -grid $wsub,$wsub,0,0,0.2,0xFFFFFFFF,$R,$G,$B -o $tempfile1;
 gmic $tempfile1 -grid $w,$w,0,0,1,0xFFFFFFFF,$R,$G,$B -o $tempfile2;
 
-display $tempfile2;
+display $tempfile2 $file;
 >&2 echo $tempfile1;
 >&2 echo $tempfile2;

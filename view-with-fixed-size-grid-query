@@ -14,4 +14,4 @@ convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropsp
 tempfile=`tempfile -s .$ext`;
 
 convert "$file" -bordercolor $grid_colour -background $grid_colour -crop $cropspec -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile
-display $tempfile;
+display $tempfile $file;

@@ -5,4 +5,4 @@ ext="${file##*.}";
 tempfile=`tempfile -s .$ext`;
 
 convert "$file" -colorspace Gray $tempfile
-display $tempfile;
+display $tempfile $file;
