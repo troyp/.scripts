@@ -1,0 +1,27 @@
+#! /usr/bin/zsh
+
+file="$1";
+ext="${file##*.}";
+cellinput=$(zenity --entry --text "Cell Size" --entry-text="100" 2>/dev/null);
+n=$(zenity --entry --text "Number of subdivisions" --entry-text="2" 2>/dev/null);
+colourinput_raw=$(zenity --color-selection --color red --show-palette 2>/dev/null);
+colourinput=${${colourinput_raw#*\(}%\)};
+program=$(zenity --entry --title "viewer application" --text "program" display feh gwenview)
+w="$cellinput";
+wsub=$((w / (n * 1.0)));
+R="$(cut -d, -f1 <<<$colourinput)";
+G="$(cut -d, -f2 <<<$colourinput)";
+B="$(cut -d, -f3 <<<$colourinput)";
+
+tempfile1=`tempfile -s .$ext`;
+tempfile2=`tempfile -s .$ext`;
+gmic $file      -grid $wsub,$wsub,0,0,0.2,0xFFFFFFFF,$R,$G,$B -o $tempfile1;
+gmic $tempfile1 -grid $w,$w,0,0,1,0xFFFFFFFF,$R,$G,$B -o $tempfile2;
+
+case $program in
+    display)  display  $tempfile2; ;;
+    feh)      feh      $tempfile2; ;;
+    gwenview) gwenview $tempfile2; ;;
+esac;
+>&2 echo $tempfile1;
+>&2 echo $tempfile2;
