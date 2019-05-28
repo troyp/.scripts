@@ -1,14 +1,23 @@
 #! /usr/bin/env bash
 
+if [[ "$1" =~ ^-h$\|^--help$ ]]; then
+    cat <<EOF
+rename-copied-files PERLEXPR
+
+Applies PERLEXPR to rename the files currently in the clipboard.
+Uses the Perl rename command.
+EOF
+    return 0; fi;
+
 xsel -b | (while read -r x || [[ -n $x ]]; do echo "$x"; done) | tac |
     while read -r x || [[ -n $x ]]; do
         path="${x#file://}";
         dir="${path%/*}";
         f="${path##*/}";
-        # echo $x; echo $path; echo $dir; echo $f; echo "$path/${1//%/$f}";
-        if grep -q "%" <(echo $1); then
-            mv -i "$path" "${path%/*}/${1//%/$f}";
-        else
-            mv -i "$path" "${path%/*}/$1$f";
-        fi;
+        # For some reason, rename is unable to handle certain files with special
+        # characters (eg +) when given their full path (but works when given their
+        # filename in the current directory)
+        pushd "$dir";
+        eval "/usr/local/bin/rename '$1' '$f'"
+        popd;
     done
