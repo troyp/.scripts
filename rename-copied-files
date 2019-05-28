@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+xsel -b | (while read -r x || [[ -n $x ]]; do echo "$x"; done) | tac |
+    while read -r x || [[ -n $x ]]; do
+        path="${x#file://}";
+        dir="${path%/*}";
+        f="${path##*/}";
+        # echo $x; echo $path; echo $dir; echo $f; echo "$path/${1//%/$f}";
+        if grep -q "%" <(echo $1); then
+            mv -i "$path" "${path%/*}/${1//%/$f}";
+        else
+            mv -i "$path" "${path%/*}/$1$f";
+        fi;
+    done
