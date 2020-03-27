@@ -79,6 +79,10 @@ if [[ -n $CREATEINDEX || -n $SELECTINDEX ]]; then
   </head>
 </html>
 EOF
+else
+    if [[ -f "$dir/index.htm" ]]; then
+        cp "$dir/index.htm" "$dir/index.html";
+    fi
 fi
 
 # ,-----------------,
