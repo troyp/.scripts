@@ -1,3 +1,13 @@
 #! /bin/bash
 
-echo "$1" | xclip -i;
+if echo "$1" | egrep -q '^-x$|^--keep-extension$'; then
+    extension="t";
+    shift;
+fi
+
+if [[ -n $extension ]]; then
+    name=`basename "$1"`;
+else
+    name=`basename "$1" | sed -r 's/\..+//'`;
+fi;
+echo "$name" | xclip -i;
