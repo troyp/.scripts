@@ -12,6 +12,7 @@ Convert an HTML directory containing an index.html file into a .maff file.
 Options:
   -h            display this help and exit
   -i rel_addr   create index.html file which redirects to rel_addr
+  -I            create index.html file - query redirect target (query user: SPC to complete, CR to select)
   -o outname    specify output filename
   -q            suppress archive output; again to suppress all output
   -u            convert spaces in directory name to underscores
@@ -59,7 +60,7 @@ if [[ -n $CREATEINDEX || -n $SELECTINDEX ]]; then
     # check that index.html doesn't already exist
     if [[ -f "$dir/index.html" ]]; then
         if [[ $QUIET != "qq" ]]; then
-            echo "-i specified, but top level index.html file already exists in '$dir'" >&2
+            echo "-i/I specified, but top level index.html file already exists in '$dir'" >&2
         fi
         exit 1
     fi
