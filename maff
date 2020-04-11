@@ -50,7 +50,8 @@ while getopts hi:Io:uq opt; do
     esac
 done
 shift $((OPTIND - 1))
-dir="$1"
+dir="${1:-.}"
+dir="${dir%/}"
 
 # ,-------------------,
 # | Create Index File |
@@ -72,6 +73,7 @@ if [[ -n $CREATEINDEX || -n $SELECTINDEX ]]; then
         done
     fi
     # create index.html
+    startfileescaped=`recode utf8..html <<<"$startfile"`;
     > "$dir/index.html" cat <<EOF
 <html>
   <head>
