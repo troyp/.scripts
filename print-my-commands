@@ -12,11 +12,13 @@ IFS=:
 files="$SH_ALIAS_FILE:$SH_FUNCTION_FILES";
 filesarr=(${files});
 for f in "${filesarr[@]}"; do
-    cat ${f//\~/$HOME};
+    fn="${f/\~/$HOME}";
+    echo "$fn $f"
+    cat -n "$fn" | sed "s|^|$f:|"
     echo;
 done;
 for f in $SCRIPTS_DIRECTORY/*; do
-    echo "$f";
+    figlet -t "$f" 2>/dev/null || echo "$f";
     echo;
     cat "$f";
     echo;
