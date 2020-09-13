@@ -22,7 +22,7 @@ EOF
             exit 0
             ;;
         -q|--quiet)
-            quiet="&>/dev/null"
+            quiet="q$quiet"
             shift
             ;;
         --debug)
@@ -54,7 +54,11 @@ dir=`mktemp -d "/tmp/runmaff/$safename.XXXX"`
 echo "temp dir: $dir" >&3
 {
 	cd "$dir"
-	unzip "$filepath" >&3
+  if [[ -n "$quiet" ]]; then
+	   unzip -$quiet "$filepath" >&2;
+  else
+	    unzip "$filepath" >&2
+  fi;
 
   if [[ -n $debug ]]; then
       echo "filepath: $filepath";
