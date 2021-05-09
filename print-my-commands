@@ -17,7 +17,7 @@ for f in "${filesarr[@]}"; do
     cat -n "$fn" | sed "s|^|$f:|"
     echo;
 done;
-for f in $SCRIPTS_DIRECTORY/*; do
+find $SCRIPTS_DIRECTORY -name .git -prune -o -type f | while IFS="\n" read -r f; do
     echo "$f"
     nl -w $(wc -l <"$f" | wc -c) "$f"
 done;
