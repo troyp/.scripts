@@ -17,7 +17,12 @@ for f in "${filesarr[@]}"; do
     cat -n "$fn" | sed "s|^|$f:|"
     echo;
 done;
-find $SCRIPTS_DIRECTORY -name .git -prune -o -type f | while IFS="\n" read -r f; do
+find -L $SCRIPTS_DIRECTORY -type f ! -path '*/.git/*' | while read -r f; do
     echo "$f"
-    nl -w $(wc -l <"$f" | wc -c) "$f"
+    ndigits_=$(wc -l < "$f" | wc -c);
+    ndigits=$(( ${ndigits_:-0} ? $ndigits_ : 3 ));
+    tempf=`tempfile`;
+    nl -w $ndigits "$f" > $tempf;
+    paste <(cat $tempf|sed "s/.*/${f##*/}   /") $tempf;
 done;
+echo "FIXME"
