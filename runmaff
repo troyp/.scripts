@@ -15,7 +15,8 @@ runmaff [-h] [-q] file [program]
 
     Options:
       -h --help    display this help
-      -q --quiet   do not print messages
+      -q --quiet   suppress messages (-qq even quieter)
+                   - this option is passed on to unzip
       --debug      show debugging info
 EOF
             shift
