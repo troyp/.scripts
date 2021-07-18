@@ -1,0 +1,18 @@
+#! /bin/bash
+
+# Switch to another window of the same application.
+# If there is more than one other, let the user chose from a selection
+
+appclass=$(xprop -id $(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW|cut -f2) WM_CLASS | grep '^WM_CLASS' | sed -r 's/.* = "[^"]+", "([^"]+)"/\1/')
+# echo "$appclass"
+currid=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW|cut -f2)
+candidates=`mktemp`
+wmctrl -xl|sed -r 's/([0-9xa-f]+) +[0-9-]* +([^ ]+) +[^ ]+ +/\1\t\2\t/'|grep $appclass|grep -v "^0x0*${currid#0x}" > $candidates
+n=`wc -l $candidates | cuts 0`
+case $n in
+    0) exit ;;
+    1) chosen=`cat $candidates` ;;
+    *) chosen=$(cat $candidates|column -t -s"	"|dmenu -l 20|cuts 0) ;;
+esac
+echo "$chosen"
+wmctrl -ia "$chosen"
