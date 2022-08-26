@@ -1,0 +1,22 @@
+#! /bin/bash
+
+degrees=$1
+shift 1
+for f in "$@"; do
+    withoutext="${f%*.}"
+    ext="${f##*.}"
+    outname="$withoutext-rot.$ext"
+    if [[ $(xdg-mime query filetype "$f") =~ "jpeg" ]]; then
+        case $degrees in
+            90)
+                opt=6 ;;
+            180)
+                opt=3 ;;
+            270)
+                opt=8 ;;
+        esac
+        exiftool -n -orientation=$opt -o "$outname" "$f"
+    else
+        convert "$f" -rotate $degrees "$outname"
+    fi
+done
