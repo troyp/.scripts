@@ -1,0 +1,22 @@
+#! /usr/bin/zsh
+
+file="$1";
+cellinput=$(zenity --forms --title="Cell Size" --add-entry="Width" --add-entry="Height" 2>/dev/null);
+w="${cellinput%|*}";
+h="${cellinput#*|}";
+[[ -z $h ]] && h=$w;
+cropspec="${w}x${h}";
+grid_colour="${2:-white}";
+
+wsub=$((w / 4.0));
+hsub=$((h / 4.0));
+cropspecsub="${wsub}x${hsub}";
+grid_colour_sub="${3:-#ccc}";
+
+tempfile1=`tempfile -s .$ext`;
+tempfile2=`tempfile -s .$ext`;
+convert "$file"      -bordercolor $grid_colour_sub -background $grid_colour_sub -crop $cropspecsub -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile1
+convert "$tempfile1" -bordercolor $grid_colour     -background $grid_colour     -crop $cropspec    -chop 1x1 -splice 1x1 -flatten -chop 0x1 $tempfile2
+
+display $tempfile2 $file;
+>&2 echo $tempfile2;
