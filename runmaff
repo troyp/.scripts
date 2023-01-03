@@ -47,7 +47,7 @@ filename="${filepath##*/}"
 basename="${filename%.*}"
 safename=`echo "$basename" | tr " \t" "__"`
 
-program="${2:-xdg-open}"
+program="${2:-mimeopen}"
 
 mkdir -p /tmp/runmaff/
 
