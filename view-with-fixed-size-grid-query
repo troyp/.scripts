@@ -1,8 +1,5 @@
 #! /bin/bash
 
-# eg: view-with-fixed-size-grid-query myimage.png 100x80
-#     view-with-fixed-size-grid-query myimage.png 100
-
 file="$1";
 cellinput=$(zenity --forms --title="Cell Size" --add-entry="Width" --add-entry="Height" 2>/dev/null);
 w="${cellinput%|*}";

@@ -1,0 +1,21 @@
+#! /usr/bin/zsh
+
+file="$1";
+ext="${file##*.}";
+percent=$(zenity --entry --text "Fading (%)" --entry-text="75" 2>/dev/null);
+program=$(zenity --entry --title "viewer application" --text "program" display feh gwenview --entry-text "display");
+
+tempfile=`tempfile -s .$ext`;
+
+convert "$file" -fill white -colorize "$percent%" "$tempfile";
+
+case $program in
+    display)  display  $tempfile $file; ;;
+    feh)      feh      $tempfile $file; ;;
+    gwenview)
+        tempdir=`mktemp -d`;
+        cp $tempfile $tempdir;
+        cp $file $tempdir;
+        gwenview $tempdir; ;;
+esac;
+>&2 echo $tempfile;

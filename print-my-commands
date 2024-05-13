@@ -1,5 +1,6 @@
 #!/bin/bash
 
+scriptcontents="";
 if [[ "$1" =~ ^-h$|^--help$ ]]; then
     cat <<EOF
 Print contents of:
@@ -7,7 +8,11 @@ Print contents of:
   All files listed in $SH_FUNCTION_FILES
   All scripts in $SCRIPTS_DIRECTORY
 EOF
-    return 0; fi;
+elif [[ "$1" =~ ^-s$|^--script-contents$ ]]; then
+    scriptcontents="true";
+    echo "script-contents"
+    shift;
+fi;
 IFS=:
 files="$SH_ALIAS_FILE:$SH_FUNCTION_FILES";
 filesarr=(${files});
@@ -17,12 +22,16 @@ for f in "${filesarr[@]}"; do
     cat -n "$fn" | sed "s|^|$f:|"
     echo;
 done;
-find -L $SCRIPTS_DIRECTORY -type f ! -path '*/.git/*' | while read -r f; do
-    echo "$f"
-    ndigits_=$(wc -l < "$f" | wc -c);
-    ndigits=$(( ${ndigits_:-0} ? $ndigits_ : 3 ));
-    tempf=`tempfile`;
-    nl -w $ndigits "$f" > $tempf;
-    paste <(cat $tempf|sed "s/.*/${f##*/}   /") $tempf;
-done;
-echo "FIXME"
+if [[ -n $scriptcontents ]]; then
+    find -L $SCRIPTS_DIRECTORY -type f ! -path '*/.git/*' | while read -r f; do
+        echo "$f"
+        ndigits_=$(wc -l < "$f" | wc -c);
+        ndigits=$(( ${ndigits_:-0} ? $ndigits_ : 3 ));
+        tempf=`tempfile`;
+        nl -w $ndigits "$f" > $tempf;
+        paste <(cat $tempf|sed "s/.*/${f##*/}   /") $tempf;
+    done;
+    # echo "FIXME"
+else
+    find $SCRIPTS_DIRECTORY;
+fi;

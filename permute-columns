@@ -1,0 +1,11 @@
+#! /usr/bin/python
+
+# simplified version of cut using whitespace
+
+import sys
+
+perm = [int(i) for i in sys.argv[1:]]
+
+for line in sys.stdin:
+    entries = line.split()
+    print(" ".join([entries[i-1] for i in perm]))

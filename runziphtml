@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+PARSED=$(getopt -n "$0" -o hfq --long "help,quiet,debug"  -- "$@")
+if [ $? -ne 0 ]; then echo "getopt error"; return 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "$1" in
+        -h|--help)
+            cat <<EOF
+runziphtml [-h] [-q] file [program]
+    Run a zipped HTML file using default or chosen program for HTML files.
+
+    Extracts the ZIP file into a temp directory and calls PROGRAM, if
+    specified, or otherwise the program called by xdg-open.
+
+    Options:
+      -h --help    display this help
+      -q --quiet   suppress messages (-qq even quieter)
+                   - this option is passed on to unzip
+      --debug      show debugging info
+EOF
+            shift
+            exit 0
+            ;;
+        -q|--quiet)
+            quiet="q$quiet"
+            shift
+            ;;
+        --debug)
+            debug=true
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+exec 3>&1;
+
+filepath=`realpath "$1"`
+filename="${filepath##*/}"
+basename="${filename%.*}"
+safename=`echo "$basename" | tr " \t" "__"`
+
+program="${2:-mimeopen}"
+
+mkdir -p /tmp/runziphtml/
+
+dir=`mktemp -d "/tmp/runziphtml/$safename.XXXX"`
+echo "temp dir: $dir" >&3
+{
+	cd "$dir"
+  if [[ -n "$quiet" ]]; then
+	   unzip -$quiet "$filepath" >&2;
+  else
+	    unzip "$filepath" >&2
+  fi;
+
+  if [[ -n $debug ]]; then
+      echo "filepath: $filepath";
+      echo "filename: $filename";
+      echo "basename: $basename";
+      echo "safename: $safename";
+      echo "program: $program";
+      echo "dir: $dir";
+	    echo "HTML files: " */*.html */*.htm
+
+  else
+	    "$program" */*.html */*.htm >&3
+  fi;
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+rlistls () {
+    for f in ~/.readinglist/*
+    do
+        realpath "$f"
+    done
+}
+
+cd ~/.readinglist
+rlistls | peco | read -r x
+mimeopen -n "$x" &

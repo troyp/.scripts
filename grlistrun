@@ -1,0 +1,4 @@
+#!/bin/bash
+
+roxterm -e bash -c "~/.scripts/rlistrun; bash"
+
