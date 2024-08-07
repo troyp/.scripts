@@ -1,0 +1,27 @@
+#! /bin/bash
+
+f="$1";
+fpath=`realpath "$f"`;
+tmpdir=`mktemp -d`;
+if [[ `file --mime-type -b "$f"` == "application/zip" ]]; then
+    jpg=$(
+        unzip -l "$f" |
+            grep -iE '.jpe?g$' |
+            head -n2 |
+            tail -n1 |
+            sed -r '/^ *[0-9]+ *2[0-9-]*  *[0-9][0-9]:[0-9][0-9]  */!d; s///'
+       );
+    unzip "$f" "$jpg" -d "$tmpdir" >/dev/null;
+    identify "$(find $tmpdir -type f)" | sed -r 's/.*\b[0-9]+x([0-9]+)\b.*/\1/';
+else
+    jpg=$(
+        unrar l "$f" |
+            grep -iE '.jpe?g$' |
+            head -n2 |
+            tail -n1 |
+            sed -r '/^ *[A-Z.]+ +[0-9]+ *2[0-9-]*  *[0-9][0-9]:[0-9][0-9]  */!d; s///'
+       );
+    cd $tmpdir;
+    unrar x "$fpath" "$jpg" >/dev/null;
+    identify "$(find . -type f)" | sed -r 's/.*\b[0-9]+x([0-9]+)\b.*/\1/';
+fi;

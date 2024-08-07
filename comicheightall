@@ -1,0 +1,8 @@
+#! /bin/bash
+
+shopt -s nocaseglob
+
+for f in *.cb?; do
+    echo -n "$f ... ";
+    comicheight "$f";
+done;
