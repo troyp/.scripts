@@ -1,0 +1,18 @@
+#! python3
+
+import sys, re
+
+s = " ".join(sys.argv[1:])
+r = re.compile("rgb\((\d+), *(\d+), *(\d+)\)")
+m = r.match(s)
+r2 = re.compile("(\d+) +(\d+) +(\d+)")
+m2 = r2.match(s)
+r3 = re.compile("(\d+)")
+m3 = r3.match(s)
+if (m):
+    print("#" + "".join('{:02x}'.format(int(v)) for v in m.groups()))
+elif (m2):
+    print(s)
+    print("#" + "".join('{:02x}'.format(int(v)) for v in m2.groups()))
+else:
+    print('{:02x}'.format(int(m3.groups()[0])))
