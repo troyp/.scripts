@@ -1,21 +1,34 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
-from __future__ import print_function
-import sys
+# Script to expand a list of numbers (positive integers) including integer ranges into a series of
+# individual numbers, using the expandranges module (expandranges.py).
+
+# When run under the name "expandranges", the script will print each number on a new line.
+# You can create symlinks to this file under the names "expandranges_commas" and "expandranges_input"
+# (the latter can be renamed as you like). These will return the number list in different formats
+# (the former prints numbers separated by commas, the latter asks the user to input a separator).
+
+# The directory name in the sys.path.append line should be edited to match the location of expandranges.py.
+
+import sys, re
+sys.path.append("/home/troy/.scripts")
+from expandranges import *
+
+# Support Python 2 input
+try:
+    input = raw_input
+except NameError: pass
+
+scriptname = re.sub(r'.*/', '', sys.argv[0])
+
+if scriptname=="expandranges":
+    separator = "\n"
+elif scriptname=="expandranges_commas":
+    separator = ", "
+else:
+    separator = input("separator?: ")
 
 s = ''.join(sys.argv[1:])
+s.rstrip()
 
-def expand_range(a, b=None):
-    "expand inclusive range a...b, return an iterable of integers"
-    if b is None:
-        b = a
-    return range(a, b+1)
-
-def expand_ranges_string(s):
-    rgs = s.split(',')
-    for rg in rgs:
-        args = (int(x) for x in rg.split('-'))
-        for i in expand_range(*args):
-            print(i)
-
-expand_ranges_string(s)
+print(separator.join(expand_ranges_string(s)))
