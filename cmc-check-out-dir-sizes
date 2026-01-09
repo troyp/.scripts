@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# Compares original comics to processed comics with suffix .out.
+# If the size difference is too small, adds suffix .keep to original and suffix .remove to processed copy.
+
+for f in *.cb?; do
+    origsize=`stat --printf="%s" "$f"`;
+    f_out="${f%.*}.out.cbz";
+    outsize=`stat --printf="%s" out/"$f_out"`;
+    delta=$((outsize - origsize));
+    echo -n "$f:	$origsize	$outsize	$delta";
+    if [[ ! -f "out/$f_out" && ! -f "out/$f_out.remove" ]]; then
+        mv -T "$f" "$f.keep";
+    fi;
+    if (( $delta > -400000 )); then
+        mv -T "out/$f_out" "out/$f_out.remove";
+        mv -T "$f" "$f.keep";
+    else echo;
+    fi;
+done;
