@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ "$1" =~ ^-h$ || ^--help$ ]]; then
+    cat <<EOF
+copy-realdir FILE
+
+Copies the absolute filepath of FILE to the clipboard.
+EOF
+    exit 0; fi;
+
+name=`realpath "$1"`;
+echo ${name%/*} | xclip -i;

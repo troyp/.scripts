@@ -1,10 +1,11 @@
 #! /usr/bin/env python
 
-# Expand a list of numbers including number ranges into a series of individual numbers
-# eg. expandranges "77, 78, 86, 120-125, 372, 388-390"
-# The format of the output numbers is determined by the variable separator.
-# The numbers will be output on individual lines if separator=="\n",
-# or on a single line separated by commas if separator==", ".
+"""Expand a list of numbers including number ranges into a series of individual numbers
+eg. expandranges "77, 78, 86, 120-125, 372, 388-390"
+The format of the output numbers is determined by the variable separator.
+The numbers will be output on individual lines if separator=="\n",
+or on a single line separated by commas if separator==", ".
+"""
 
 from __future__ import print_function
 import sys, re

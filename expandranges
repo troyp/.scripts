@@ -1,14 +1,18 @@
 #! /usr/bin/env python3
 
-# Script to expand a list of numbers (positive integers) including integer ranges into a series of
-# individual numbers, using the expandranges module (expandranges.py).
+"""
+expandranges NUMBER_LIST
 
-# When run under the name "expandranges", the script will print each number on a new line.
-# You can create symlinks to this file under the names "expandranges_commas" and "expandranges_input"
-# (the latter can be renamed as you like). These will return the number list in different formats
-# (the former prints numbers separated by commas, the latter asks the user to input a separator).
+Script to expand a list of numbers (positive integers) including integer ranges into a series of
+individual numbers, using the expandranges module (expandranges.py).
 
-# The directory name in the sys.path.append line should be edited to match the location of expandranges.py.
+When run under the name "expandranges", the script will print each number on a new line.
+You can create symlinks to this file under the names "expandranges_commas" and "expandranges_input"
+(the latter can be renamed as you like). These will return the number list in different formats
+(the former prints numbers separated by commas, the latter asks the user to input a separator).
+
+The directory name in the sys.path.append line should be edited to match the location of expandranges.py.
+"""
 
 import sys, re
 sys.path.append("/home/troy/.scripts")

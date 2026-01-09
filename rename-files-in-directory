@@ -1,0 +1,5 @@
+#! /bin/bash
+
+cmd=$(zenity --entry --text "Perl rename command" --entry-text="s/_+/ /" 2>/dev/null) || exit 0;
+dir="${1:-$PWD}";
+eval "rename '$cmd'";

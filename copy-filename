@@ -1,5 +1,17 @@
 #! /bin/bash
 
+if [[ "$1" =~ ^-h$ || ^--help$ ]]; then
+    cat <<EOF
+copy-filename FILE
+
+Copies the name of FILE (without directory path) to clipboard.
+By default, filename extensions are removed.
+
+-x --keep-extensions  --  keep filename extensions
+EOF
+    exit 0;
+fi;
+
 if echo "$1" | egrep -q '^-x$|^--keep-extension$'; then
     extension="t";
     shift;

@@ -1,0 +1,19 @@
+#! /bin/bash
+
+if [[ "$1" =~ ^-h$\|^--help$ ]]; then
+    cat <<EOF
+osetr OSETFILE TO_BE_ADDED
+
+Merges two "ordered sets" (files with unique, ordered lines).
+
+The first file given (OSETFILE) is modified to include the entries of the second
+argument (TO_BE_ADDED).
+
+If only one file is given, the entries to be merged are given on stdin. Note
+that if unsorted input is given, it will corrupt the sorting of the file.
+EOF
+    return 0; fi;
+
+osetfile="$1";
+inputfile="${2:-/dev/stdin}";
+sort -d -i -b -u -o $osetfile -m $inputfile $osetfile;

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+check_port() {
+    target=$1;
+    if lsof -Pi :$target -sTCP:LISTEN -t >/dev/null; then
+        echo `check_port $((target+1))`;
+    else
+        echo $target;
+    fi;
+}
+
+check_port $1;

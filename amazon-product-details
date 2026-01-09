@@ -1,0 +1,5 @@
+#! /bin/bash
+
+pId="$1";
+pUrl="https://www.amazon.com.au/dp/$pId";
+pHtml=$(curl $pUrl 2>/dev/null);

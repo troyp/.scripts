@@ -1,12 +1,20 @@
 #!/usr/bin/python3
 
-# Expands lines from an index containing an entry followed by a list of pages (which may contain page ranges). This script reformats the entries for use (after conversion) in a PDF table of contents, with each page on a separate line. The first page from an entry is listed after the entry text; further pages are indented and may replace the entry text with continuation text.
-# Parameters:
-#   continuation: this string is used in place of the entry text for subsequent pages. To use the entry text for
-#       all pages, set continuation = False
-#   indent: this string is the additional indentation added to subsequent page entries
-#   expand_ranges_p: Takes the value True or False. If True, page ranges are expanded and each individual page
-#       listed (this may be a lot of pages). If False, only the first page of a range is included.
+"""Expands lines from an index containing an entry followed by a list of pages
+(which may contain page ranges). This script reformats the entries for use
+(after conversion) in a PDF table of contents, with each page on a separate
+line. The first page from an entry is listed after the entry text; further
+pages are indented and may replace the entry text with continuation text.
+
+Parameters:
+  continuation: this string is used in place of the entry text for subsequent
+  pages. To use the entry text for all pages, set continuation = False
+  indent: this string is the additional indentation added to subsequent page
+  entries
+  expand_ranges_p: Takes the value True or False. If True, page ranges are
+  expanded and each individual page listed (this may be a lot of pages). If
+  False, only the first page of a range is included.
+"""
 
 import sys, re
 
